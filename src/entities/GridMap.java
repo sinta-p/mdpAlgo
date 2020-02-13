@@ -197,5 +197,85 @@ public class GridMap {
             return;
         map[x][y].updateCounter(value);
     }
-	//line 107 mdp_a onwards
+
+    public String generateDescriptorPartOne() {
+        StringBuilder builder;
+
+        // first build string for exploration status
+        builder = new StringBuilder();
+        builder.append(11);
+        for (int y = MAP_ROWS - 1; y >= 0; y--) {
+            for (int x = 0; x < MAP_COLS; x++) {
+                if (getIsExplored(x, y)) {
+                    builder.append(1);
+                } else {
+                    builder.append(0);
+                }
+            }
+        }
+        builder.append(11);
+        String part1 = builder.toString();
+        builder = new StringBuilder();
+        for (int i = 0; i < part1.length() / 4; i++) {
+            builder.append(Integer.toHexString(Integer.parseInt(part1.substring(i * 4, (i + 1) * 4), 2)));
+        }
+        System.out.println("Map descriptor part 1:");
+        System.out.println(builder.toString());
+
+        return builder.toString();
+    }
+
+    public String generateDescriptorPartTwo() {
+        // second build string for obstacle status
+        StringBuilder builder = new StringBuilder();
+        for (int y = MAP_ROWS - 1; y >= 0; y--) {
+            for (int x = 0; x < MAP_COLS; x++) {
+                if (getIsExplored(x, y)) {
+                    if (getIsObstacle(x, y)) {
+                        builder.append(1);
+                    } else {
+                        builder.append(0);
+                    }
+                }
+            }
+        }
+        while (0 != (builder.length() % 8)) {
+            builder.append(0);
+        }
+        String part2 = builder.toString();
+        builder = new StringBuilder();
+        for (int i = 0; i < part2.length() / 4; i++) {
+            builder.append(Integer.toHexString(Integer.parseInt(part2.substring(i * 4, (i + 1) * 4), 2)));
+        }
+        System.out.println("Map descriptor part 2:");
+        System.out.println(builder.toString());
+
+        return builder.toString();
+    }
+
+    public String generateForAndroid() {
+        StringBuilder builder;
+
+        builder = new StringBuilder();
+        for (int y = 0; y < MAP_ROWS; y++) {
+            for (int x = 0; x < MAP_COLS; x++) {
+                if (getIsExplored(x, y)) {
+                    if (getIsObstacle(x, y)) {
+                        builder.append(1);
+                    } else {
+                        builder.append(0);
+                    }
+                } else {
+                    builder.append(0);
+                }
+            }
+        }
+        String part1 = builder.toString();
+        builder = new StringBuilder();
+        for (int i = 0; i < part1.length() / 4; i++) {
+            builder.append(Integer.toHexString(Integer.parseInt(part1.substring(i * 4, (i + 1) * 4), 2)));
+        }
+
+        return builder.toString();
+    }
 }

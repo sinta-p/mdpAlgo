@@ -67,7 +67,12 @@ public class Robot {
     public int getOrientation() {
         return orientation;
     }
-    
+
+    public boolean canCalibrateFront() { return true; }//TODO:
+
+    public boolean canCalibrateLeft() {//TODO:
+	    return true;
+    }
 
     public void setOrientation(int direction) {
     	orientation = direction;
@@ -303,4 +308,5 @@ public class Robot {
             }
         }
     }
+
 }
