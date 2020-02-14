@@ -41,7 +41,7 @@ public class MdpApp {
 		Simulator simulator = new Simulator(grid, robot);
 		
 		new connectButtonListener(simulator);
-		new printHexButtonListener(simulator,grid);
+		new printHexButtonListener(simulator,grid,robot);
 		new loadMapButtonListener(simulator,robot,grid);
 		
 
