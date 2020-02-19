@@ -27,8 +27,8 @@ public interface AlgorithmRunner {
      */
     static List<String> runAstar(int startX, int startY, int endX, int endY, GridMap grid, Robot robot) {
         // initialization
-        boolean[][] closedSet;
-        List<GridBox> openSet;
+        boolean[][] closedSet;                                      //already evaluated
+        List<GridBox> openSet;                                      //to be evaluated
         HashMap<GridBox, GridBox> cameFrom;
         int[][] gScore;
         int[][] fScore;
@@ -36,8 +36,8 @@ public interface AlgorithmRunner {
         closedSet = new boolean[MAP_COLS - 2][MAP_ROWS - 2];
         openSet = new ArrayList<>();
         cameFrom = new HashMap<>();
-        gScore = new int[MAP_COLS - 2][MAP_ROWS - 2];
-        fScore = new int[MAP_COLS - 2][MAP_ROWS - 2];
+        gScore = new int[MAP_COLS - 2][MAP_ROWS - 2];               //cost from start
+        fScore = new int[MAP_COLS - 2][MAP_ROWS - 2];               //estimate distance to goal
         cells = new GridBox[MAP_COLS - 2][MAP_ROWS - 2];
 
         for (int x = 0; x < MAP_COLS - 2; x++)
@@ -83,7 +83,7 @@ public interface AlgorithmRunner {
         }
         return null;
     }
-
+    
     /**
      * Select a cell from the openset with lowest f score.
      * @param openSet

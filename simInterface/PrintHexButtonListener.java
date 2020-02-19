@@ -9,7 +9,7 @@ import connection.SocketMgr;
 import entities.GridMap;
 import entities.Robot;
 
-public class printHexButtonListener implements ActionListener {
+public class PrintHexButtonListener implements ActionListener {
 	
 
 	private Simulator cSim;
@@ -20,11 +20,11 @@ public class printHexButtonListener implements ActionListener {
 	private StringBuilder finalOutput;
 	
 	
-	public printHexButtonListener(Simulator curSim,GridMap grid, Robot robot) {
+	public PrintHexButtonListener(Simulator curSim, GridMap grid, Robot robot) {
 		cSim = curSim;
 		cGrid =grid;
 		cRobot = robot;
-		cSim.addprintHexButtonListener(this);
+		cSim.addPrintHexButtonListener(this);
 	}
 	
 	@Override

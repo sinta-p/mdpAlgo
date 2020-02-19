@@ -8,13 +8,13 @@ import javax.swing.*;
 import connection.SocketMgr;
 
 
-public class connectButtonListener implements ActionListener{
+public class ConnectButtonListener implements ActionListener{
 	
 	private Simulator sim;
 	
-	public connectButtonListener(Simulator curSim) {
+	public ConnectButtonListener(Simulator curSim) {
 		sim = curSim;
-		sim.addconnectButtonListener(this);
+	//	sim.addconnectButtonListener(this);
 	}
 	
 	@Override

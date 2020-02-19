@@ -7,26 +7,23 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-import connection.SocketMgr;
-
 import java.io.IOException;
 import entities.GridMap;
 import entities.Robot;
-import simInterface.connectButtonListener.ConnectWorker;
 
 
-public class loadMapButtonListener implements ActionListener{
+public class LoadMapButtonListener implements ActionListener{
 
 
 	private Simulator curSim;
 	private GridMap curGrid;
 	private Robot curRobot;
 	
-	public loadMapButtonListener(Simulator sim, Robot robot, GridMap grid) {
+	public LoadMapButtonListener(Simulator sim, Robot robot, GridMap grid) {
 		curSim = sim;
 		curRobot = robot;
 		curGrid = grid;
-		sim.addloadMapButtonListener(this);
+		sim.addLoadMapButtonListener(this);
 	}
 	
 	@Override

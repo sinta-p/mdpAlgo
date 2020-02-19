@@ -3,16 +3,15 @@ import static constant.EntitiesConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import connection.SocketMgr;
 import entities.GridMap;
 import entities.Robot;
 import entities.Sensor;
 import simInterface.Simulator;
-import simInterface.connectButtonListener;
-import simInterface.loadMapButtonListener;
-import simInterface.printHexButtonListener;
+import simInterface.ConnectButtonListener;
+import simInterface.LoadMapButtonListener;
+import simInterface.PrintHexButtonListener;
+import simInterface.ExplorationButtonListener;
 
 public class MdpApp {
 	public static void main(String args[]) {
@@ -40,9 +39,10 @@ public class MdpApp {
 		Robot robot = new Robot(grid, sensors);
 		Simulator simulator = new Simulator(grid, robot);
 		
-		new connectButtonListener(simulator);
-		new printHexButtonListener(simulator,grid,robot);
-		new loadMapButtonListener(simulator,robot,grid);
+		new ConnectButtonListener(simulator);
+		new PrintHexButtonListener(simulator,grid,robot);
+		new LoadMapButtonListener(simulator,robot,grid);
+		new ExplorationButtonListener(simulator,robot,grid);
 		
 
 		
