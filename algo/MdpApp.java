@@ -12,6 +12,7 @@ import simInterface.ConnectButtonListener;
 import simInterface.LoadMapButtonListener;
 import simInterface.PrintHexButtonListener;
 import simInterface.ExplorationButtonListener;
+import simInterface.FastestPathButtonListener;
 
 public class MdpApp {
 	public static void main(String args[]) {
@@ -43,6 +44,7 @@ public class MdpApp {
 		new PrintHexButtonListener(simulator,grid,robot);
 		new LoadMapButtonListener(simulator,robot,grid);
 		new ExplorationButtonListener(simulator,robot,grid);
+		new FastestPathButtonListener(simulator,robot,grid);
 		
 
 		
