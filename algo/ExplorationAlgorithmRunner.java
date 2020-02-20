@@ -137,6 +137,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
         System.out.println("EXPLORATION COMPLETED!");
         System.out.println("PERCENTAGE OF AREA EXPLORED: " + grid.checkExploredPercentage() + "%!");
+        robot.reset();
     }
 
     private boolean findPathAndMove(GridMap grid, Robot robot, int x, int y, boolean realRun) {

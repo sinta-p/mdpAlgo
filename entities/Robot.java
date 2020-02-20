@@ -227,6 +227,7 @@ public class Robot {
 	 public void reset() {
 		 support.firePropertyChange("posX", this.posX, START_POS_X);
 		 support.firePropertyChange("posY", this.posY, START_POS_Y);
+		 orientation =NORTH;
 		 support.firePropertyChange("orientation", this.orientation, NORTH);
 	 }
 

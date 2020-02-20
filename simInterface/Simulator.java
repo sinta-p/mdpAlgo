@@ -62,6 +62,7 @@ public class Simulator extends JFrame {
             for(int b=0; b< MAP_COLS ; b++) {
                 mSimulationBox[b][a].addPropertyChangeListener((PropertyChangeListener) mMapPanel);
             }
+        mSimulationRobot.addPropertyChangeListener((PropertyChangeListener) mMapPanel);
 
 
         // layout components
