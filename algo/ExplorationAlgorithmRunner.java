@@ -297,16 +297,16 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
             return true; // TURNED
         }
-//        else if (!robot.isObstacleLeft()) {
-//            System.out.println("NO OBSTACLES ON THE LEFT! TURNING LEFT");
-//            if (realRun)
-//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
-//            robot.turn(LEFT);
-//            stepTaken();
-//            System.out.println("-----------------------------------------------");
-//
-//            return true; // TURNED
-//        }
+        else if (!robot.isObstacleLeft()) {
+            System.out.println("NO OBSTACLES ON THE LEFT! TURNING LEFT");
+            if (realRun)
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+            robot.turn(LEFT);
+            stepTaken();
+            System.out.println("-----------------------------------------------");
+
+            return true; // TURNED
+        }
         return false; // DIDN'T TURN
     }
 
