@@ -24,19 +24,19 @@ public class CommMgr extends EntitiesConstants{
         StringBuilder builder = new StringBuilder();
         builder.append("{\"robot\":\"");
         builder.append(descriptor);
-        builder.append(",");
+        builder.append("|");
         builder.append(MAP_ROWS - y);
-        builder.append(",");
+        builder.append("|");
         builder.append(x + 1);
-        builder.append(",");
+        builder.append("|");
         if (heading == NORTH) {
             builder.append(0);
         } else if (heading == EAST) {
-            builder.append(90);
+            builder.append(1);
         } else if (heading == SOUTH) {
-            builder.append(180);
+            builder.append(2);
         } else if (heading == WEST) {
-            builder.append(270);
+            builder.append(3);
         }
         builder.append("\"}");
         return builder.toString();

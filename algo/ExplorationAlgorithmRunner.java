@@ -27,7 +27,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         if (realRun) {
             grid.reset();
             String msg = SocketMgr.getInstance().receiveMessage(false);
-            while (!msg.equals("exs")) {
+            while (!msg.equals("startexp")) {
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
         }

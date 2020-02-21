@@ -38,7 +38,7 @@ public class FastestPathAlgorithmRunner implements AlgorithmRunner {
         // wait for start up message
         if (realRun) {
             String msg = SocketMgr.getInstance().receiveMessage(false);
-            while (!msg.equals("fps")) {
+            while (!msg.equals("startfp")) {
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
         }
