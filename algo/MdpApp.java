@@ -7,12 +7,7 @@ import java.util.List;
 import entities.GridMap;
 import entities.Robot;
 import entities.Sensor;
-import simInterface.Simulator;
-import simInterface.ConnectButtonListener;
-import simInterface.LoadMapButtonListener;
-import simInterface.PrintHexButtonListener;
-import simInterface.ExplorationButtonListener;
-import simInterface.FastestPathButtonListener;
+import simInterface.*;
 
 public class MdpApp {
 	public static void main(String args[]) {
@@ -45,6 +40,8 @@ public class MdpApp {
 		new LoadMapButtonListener(simulator,robot,grid);
 		new ExplorationButtonListener(simulator,robot,grid);
 		new FastestPathButtonListener(simulator,robot,grid);
+		new TimeLimitedButtonListener(simulator,robot,grid);
+		new CoverageLimitedButtonListener(simulator, robot, grid);
 		
 
 		

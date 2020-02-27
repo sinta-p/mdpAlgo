@@ -49,6 +49,7 @@ public class Simulator extends JFrame {
         mTimeLimitedButton = new JButton("Time limited");
         mCoverageLimitedButton = new JButton("Coverage limited");
         mRealRunButton = new JButton("Physical run");
+        mTimeLimitedButton = new JButton("Time Limited Run");
         mRealRunCheckBox = new JCheckBox("Real run");
         mRealRunCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
         mRobotSpeedField = new JFormattedTextField(NumberFormat.getIntegerInstance());
@@ -82,6 +83,7 @@ public class Simulator extends JFrame {
         bottomPanel.add(mTimeLimitedButton);
         bottomPanel.add(mCoverageLimitedButton);
         bottomPanel.add(mLoadMapButton);
+        bottomPanel.add(mTimeLimitedButton);
         this.add(bottomPanel, BorderLayout.PAGE_END);
 
         // set up the frame
