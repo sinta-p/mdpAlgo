@@ -38,9 +38,9 @@ public class MapPanel extends JPanel implements PropertyChangeListener{
             for (int y = 0; y < MAP_ROWS; y++) {
                 /* draw cells */
                 if (GridMap.isInStartZone(x, y))
-                    g2d.setColor(Color.YELLOW);
+                    g2d.setColor(Color.GREEN);
                 else if (GridMap.isInEndZone(x, y))
-                    g2d.setColor(Color.BLUE);
+                    g2d.setColor(Color.cyan);
                 else if (cells[x][y].getIsVisited()) {
                     if (cells[x][y].getIsObstacle())
                         g2d.setColor(Color.BLACK);

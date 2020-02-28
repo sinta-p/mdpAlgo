@@ -42,6 +42,8 @@ public class MdpApp {
 		new FastestPathButtonListener(simulator,robot,grid);
 		new TimeLimitedButtonListener(simulator,robot,grid);
 		new CoverageLimitedButtonListener(simulator, robot, grid);
+		new RealRunButtonListener(simulator,robot,grid);
+		new RealRunCheckBoxListener(simulator);
 		
 
 		
