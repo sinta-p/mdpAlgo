@@ -24,7 +24,7 @@ public class MdpApp {
 		Sensor sensor3 = new Sensor(2, 0, 0, MIDDLE, 5);
 		Sensor sensor1 = new Sensor(2, 2, 0, MIDDLE, 5);
 		Sensor sensor2 = new Sensor(2, 1, 0, MIDDLE, 3);
-		Sensor sensor6 = new Sensor(4, 4, 1, RIGHT, 1);
+		Sensor sensor6 = new Sensor(6, 2, 1, RIGHT, 1);
 		List<Sensor> sensors = new ArrayList<>();
 		sensors.add(sensor1);
 		sensors.add(sensor2);
