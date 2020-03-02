@@ -300,7 +300,7 @@ public class Robot {
                 int range = allSensors.get(i).getRange();
                 int x = allSensors.get(i).getActualPosX();
                 int y = allSensors.get(i).getActualPosY();
-                if (i==6 && returnedDistance == 8){
+                if (i==5 && returnedDistance == 8){
                     updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability());
                 }else
                 updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
