@@ -7,6 +7,7 @@ import entities.Robot;
 import connection.CommMgr;
 import connection.SocketMgr;
 import simInterface.Simulator;
+import algo.ExplorationAlgorithmRunner;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -46,9 +47,13 @@ public class RealRunButtonListener implements ActionListener {
         @Override
         protected Integer doInBackground() throws Exception {
             // receive way point
+
             String msg = SocketMgr.getInstance().receiveMessage(false);
-            List<Integer> waypoints;
-            while ((waypoints = CommMgr.parseMessage(msg)) == null) {
+//            if (SocketMgr.getInstance().receiveMessage())
+
+            List<Integer> waypoints = null;
+            while (waypoints == null && (waypoints = CommMgr.parseMessage(msg))==null) {
+                System.out.println("Entered");
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
 

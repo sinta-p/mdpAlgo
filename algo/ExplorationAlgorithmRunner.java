@@ -29,6 +29,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             String msg = SocketMgr.getInstance().receiveMessage(false);
             while (!msg.equals("startexp")) {
                 msg = SocketMgr.getInstance().receiveMessage(false);
+                SocketMgr.getInstance().sendMessage("A","M");
             }
         }
         // SELECT EITHER ONE OF THE METHODS TO RUN ALGORITHMS.
@@ -69,6 +70,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         robot.sense(realRun);
 
         // INITIAL UPDATE OF MAP TO ANDROID
+
         if (realRun)
             SocketMgr.getInstance().sendMessage(TARGET_ANDROID,
                     CommMgr.generateMapDescriptorMsg(grid.generateForAndroid(),
