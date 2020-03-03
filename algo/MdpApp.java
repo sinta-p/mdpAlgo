@@ -39,6 +39,7 @@ public class MdpApp {
 		new PrintHexButtonListener(simulator,grid,robot);
 		new LoadMapButtonListener(simulator,robot,grid);
 		new ExplorationButtonListener(simulator,robot,grid);
+		new ReplayButtonListener(simulator,robot,grid);
 		new FastestPathButtonListener(simulator,robot,grid);
 		new TimeLimitedButtonListener(simulator,robot,grid);
 		new CoverageLimitedButtonListener(simulator, robot, grid);
