@@ -283,12 +283,12 @@ public class Robot {
 
     public void sense(boolean realRun) {
         if (realRun) {
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
+            //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
             String sensorData = SocketMgr.getInstance().receiveMessage(true);
             
             //while sensor never reply, send message again
             while (sensorData == null) {
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
+                //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
                 sensorData = SocketMgr.getInstance().receiveMessage(true);
             }
             

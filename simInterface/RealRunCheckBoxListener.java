@@ -28,6 +28,8 @@ public class RealRunCheckBoxListener implements ActionListener {
             if (!SocketMgr.getInstance().isConnected())
                 SocketMgr.getInstance().openConnection();
         } else {
+            if (SocketMgr.getInstance().isConnected())
+                SocketMgr.getInstance().closeConnection();
             mView.enableLoadMapButton();
             mView.enableExplorationButton();
             mView.enableFastestPathButton();
