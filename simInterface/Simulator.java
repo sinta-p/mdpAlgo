@@ -18,6 +18,7 @@ public class Simulator extends JFrame {
     // Swing components
     private JPanel mMapPanel;
     private JButton mExplorationButton;
+    private JButton mReplayButton;
     private JButton mFastestPathButton;
     private JButton mLoadMapButton;
     private JButton mTimeLimitedButton;
@@ -42,6 +43,7 @@ public class Simulator extends JFrame {
     private void initializeUi() {
         // create components
         mMapPanel = new MapPanel(mSimulationGrid, mSimulationRobot);
+        mReplayButton = new JButton("Replay Reading");
         mPrintHexButton = new JButton("Print Hex");
         mExplorationButton = new JButton("Exploration");
         mFastestPathButton = new JButton("Fastest path");
@@ -84,6 +86,7 @@ public class Simulator extends JFrame {
         bottomPanel.add(mCoverageLimitedButton);
         bottomPanel.add(mLoadMapButton);
         bottomPanel.add(mTimeLimitedButton);
+        bottomPanel.add(mReplayButton);
         this.add(bottomPanel, BorderLayout.PAGE_END);
 
         // set up the frame
@@ -92,6 +95,10 @@ public class Simulator extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public void addReplayButtonListener(ActionListener actionListener) {
+        mReplayButton.addActionListener(actionListener);
     }
 
     public void addExplorationButtonListener(ActionListener actionListener) {

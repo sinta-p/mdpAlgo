@@ -1,8 +1,11 @@
 package entities;
 
+import java.io.*;
 import java.util.List;
 import constant.EntitiesConstants;
 import connection.SocketMgr;
+import simInterface.ReplayButtonListener;
+
 import static constant.EntitiesConstants.*;
 
 import java.beans.PropertyChangeEvent;
@@ -21,7 +24,9 @@ public class Robot {
 	private GridMap map;
 	private List<Sensor> allSensors;
 	private PropertyChangeSupport support;
-	
+    File file=new File("sensorReading.txt");    //creates a new file instance
+    FileReader fr= null;   //reads the file
+    BufferedReader br= null;
 	
 	
 	public Robot(GridMap grid, List<Sensor> sensors) {
@@ -306,13 +311,42 @@ public class Robot {
                 updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
             }
         } else {
-            for (Sensor sensor : allSensors) {
-                int returnedDistance = sensor.sense(map);
-                int heading = sensor.getActualOrientation();
-                int range = sensor.getRange();
-                int x = sensor.getActualPosX();
-                int y = sensor.getActualPosY();
-                updateMap(returnedDistance, heading, range, x, y, false, sensor.getReliability());
+            if (ReplayButtonListener.isReplay){
+                try {
+                    if(fr == null){
+                        fr = new FileReader(file);
+                        br=new BufferedReader(fr);  //creates a buffering character input stream
+                    }
+                    String line = null;
+                    if ((line = br.readLine())!= null){
+                        String[] sensorReadings = line.split(",", allSensors.size());
+                        for (int i = 0; i < allSensors.size(); i++) {
+                            int returnedDistance = Integer.parseInt(sensorReadings[i]);
+                            int heading = allSensors.get(i).getActualOrientation();
+                            int range = allSensors.get(i).getRange();
+                            int x = allSensors.get(i).getActualPosX();
+                            int y = allSensors.get(i).getActualPosY();
+                            if (i==5 && returnedDistance == 8){
+                                updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability());
+                            }else
+                                updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                for (Sensor sensor : allSensors) {
+                    int returnedDistance = sensor.sense(map);
+                    int heading = sensor.getActualOrientation();
+                    int range = sensor.getRange();
+                    int x = sensor.getActualPosX();
+                    int y = sensor.getActualPosY();
+                    updateMap(returnedDistance, heading, range, x, y, false, sensor.getReliability());
+                }
             }
         }
     }

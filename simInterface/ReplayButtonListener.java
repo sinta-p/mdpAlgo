@@ -9,29 +9,31 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ExplorationButtonListener implements ActionListener {
+public class ReplayButtonListener implements ActionListener {
 
     private Simulator mView;
     private GridMap mGrid;
     private Robot mRobot;
 
-    public ExplorationButtonListener(Simulator view, Robot robot,GridMap grid) {
+    public static boolean isReplay = false;
+
+    public ReplayButtonListener(Simulator view, Robot robot,GridMap grid) {
         mView = view;
         mGrid = grid;
         mRobot = robot;
-        mView.addExplorationButtonListener(this);
+        mView.addReplayButtonListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Exploration button pressed");
+        System.out.println("Replay button pressed");
         //if (!mView.getIsRealRun()) {
         if (mView.getRobotSpeed() == 0) {
             JOptionPane.showMessageDialog(null, "Please set robot speed! (X Steps per second)", "Fastest path", JOptionPane.ERROR_MESSAGE);
         }
         //}
         mView.disableButtons();
-        ReplayButtonListener.isReplay = false;
+        isReplay = true;
         new ExplorationWorker().execute();
     }
 

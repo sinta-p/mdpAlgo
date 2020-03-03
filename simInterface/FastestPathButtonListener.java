@@ -30,6 +30,7 @@ public class FastestPathButtonListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Please set robot speed! (X Steps per second)", "Fastest path", JOptionPane.ERROR_MESSAGE);
         }
         mView.disableButtons();
+        ReplayButtonListener.isReplay = false;
         new FastestPathWorker().execute();
     }
 
