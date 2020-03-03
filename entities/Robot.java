@@ -1,5 +1,7 @@
 package entities;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import constant.EntitiesConstants;
 import connection.SocketMgr;
@@ -285,13 +287,18 @@ public class Robot {
         if (realRun) {
             //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
             String sensorData = SocketMgr.getInstance().receiveMessage(true);
-            
             //while sensor never reply, send message again
             while (sensorData == null) {
                 //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
                 sensorData = SocketMgr.getInstance().receiveMessage(true);
             }
-            
+            try {
+                FileWriter f = new FileWriter("sensorReading.txt",true);
+                f.write(sensorData+"\n");
+                f.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //
             String[] sensorReadings = sensorData.split(",", allSensors.size());
             for (int i = 0; i < allSensors.size(); i++) {

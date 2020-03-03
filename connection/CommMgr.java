@@ -20,14 +20,14 @@ public class CommMgr extends EntitiesConstants{
      * @param heading Robot's heading
      * @return Message string for sending to Android
      */
-    public static String generateMapDescriptorMsg(String descriptor, int x, int y, int heading) {
+    public static String generateMapDescriptorMsg(String descriptor1,String descriptor2, int x, int y, int heading) {
         StringBuilder builder = new StringBuilder();
-        builder.append("{\"robot\":\"");
-        builder.append(descriptor);
+        //y,x,orientation
+        builder.append("MDF");
         builder.append("|");
-        builder.append(MAP_ROWS - y);
+        builder.append(MAP_ROWS - y-1);
         builder.append("|");
-        builder.append(x + 1);
+        builder.append(x);
         builder.append("|");
         if (heading == NORTH) {
             builder.append(0);
@@ -38,7 +38,11 @@ public class CommMgr extends EntitiesConstants{
         } else if (heading == WEST) {
             builder.append(3);
         }
-        builder.append("\"}");
+        builder.append("|");
+        builder.append(descriptor1);
+        builder.append("|");
+        builder.append(descriptor2);
+
         return builder.toString();
     }
 

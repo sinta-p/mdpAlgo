@@ -219,8 +219,8 @@ public class GridMap {
         for (int i = 0; i < part1.length() / 4; i++) {
             builder.append(Integer.toHexString(Integer.parseInt(part1.substring(i * 4, (i + 1) * 4), 2)));
         }
-        System.out.println("Map descriptor part 1:");
-        System.out.println(builder.toString());
+        //System.out.println("Map descriptor part 1:");
+        //System.out.println(builder.toString());
 
         return builder.toString();
     }
