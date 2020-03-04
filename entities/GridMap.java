@@ -48,6 +48,10 @@ public class GridMap {
         return isOutOfArena(x, y) || map[x][y].getIsObstacle();
     }
 
+    public boolean getIsOnlyObstacle(int x, int y) {
+        return isOutOfArena(x,y) ? false: map[x][y].getIsObstacle();
+    }
+
     public boolean isOutOfArena(int x, int y) {
         return x < 0 || y < 0 || x >= MAP_COLS || y >= MAP_ROWS;
     }
