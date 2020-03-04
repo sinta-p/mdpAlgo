@@ -57,7 +57,7 @@ public class RealRunButtonListener implements ActionListener {
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
 
-            //Clear snesorReading
+            //Clear sensorReading
             FileWriter f = new FileWriter("sensorReading.txt",false);
             f.write("");
             f.close();
