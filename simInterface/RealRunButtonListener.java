@@ -12,6 +12,7 @@ import algo.ExplorationAlgorithmRunner;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.util.List;
 
 /**
@@ -56,6 +57,11 @@ public class RealRunButtonListener implements ActionListener {
                 System.out.println("Entered");
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
+
+            //Clear snesorReading
+            FileWriter f = new FileWriter("sensorReading.txt",false);
+            f.write("");
+            f.close();
 
             // do exploration
             AlgorithmRunner explorationRunner = new ExplorationAlgorithmRunner(mView.getRobotSpeed());
