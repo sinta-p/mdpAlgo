@@ -52,10 +52,10 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 robot.turn(LEFT);
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
             }
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
         }
     }
 
