@@ -15,7 +15,9 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private int sleepDuration;
     private static final int START_X = 0;
     private static final int START_Y = 17;
-    private static final int CALIBRATION_LIMIT = 4;
+    private static final int CALIBRATION_LIMIT = 2;
+    private int calibrationCounter = 0;
+
     public ExplorationAlgorithmRunner(int speed){
         sleepDuration = 1000 / speed;
     }
@@ -64,7 +66,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         boolean startZoneFlag = false;
 
         // CALIBRATE & SENSE
-        int calibrationCounter = 0;
+        calibrationCounter = 0;
 //        if (realRun) {
 //            calibrateAtStart();
 //        }
@@ -191,33 +193,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         boolean turned = leftWallFollower(robot, grid, realRun);
 
         if (turned) {
-            // CALIBRATION
-            if (realRun) {
-                calibrationCounter++;
-                // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
-                // OTHERWISE CALIBRATE LEFT
-                if (calibrationCounter >= CALIBRATION_LIMIT){
-                    if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-                        SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
-                            calibrationCounter = 0;
-                    } else if (robot.canCalibrateLeft()) {
-                        SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
-                        calibrationCounter = 0;
-                    }
-                }
-            }
-            else {
-                //SHOW CALIBRATION PROCESS ON SIMULATOR
-                calibrationCounter++;
-                if ((robot.canCalibrateFront()|| calibrationCounter >= CALIBRATION_LIMIT) && robot.canCalibrateLeft()){
-                    robot.turn(LEFT);
-                    robot.turn(RIGHT);
-                    calibrationCounter = 0;
-                }  else if (robot.canCalibrateFront()) {
-                    calibrationCounter = 0;
-                }
-            }
-
             // SENSE AFTER CALIBRATION
             senseAndUpdateAndroid(robot, grid, realRun);
         }
@@ -269,9 +244,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
      * @return whether a turn is performed
      */
     private boolean leftWallFollower(Robot robot, GridMap grid, boolean realRun){
+
         if (robot.isObstacleAhead()) {
             if (robot.isObstacleRight() && robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (ALL 3 SIDES) U-TURNING");
+                doCalibration(robot, realRun);
+
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "U");
                 robot.turn(RIGHT);
@@ -280,12 +258,16 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 stepTaken();
             } else if (robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (FRONT + LEFT) TURNING RIGHT");
+                doCalibration(robot, realRun);
+
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
                 robot.turn(RIGHT);
                 stepTaken();
             } else {
                 System.out.println("OBSTACLE DETECTED! (FRONT) TURNING LEFT");
+                doCalibration(robot, realRun);
+
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
                 robot.turn(LEFT);
@@ -297,6 +279,8 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
         else if (!robot.isObstacleLeft()) {
             System.out.println("NO OBSTACLES ON THE LEFT! TURNING LEFT");
+            doCalibration(robot, realRun);
+
             if (realRun)
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
             robot.turn(LEFT);
@@ -306,6 +290,38 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             return true; // TURNED
         }
         return false; // DIDN'T TURN
+    }
+
+    private void doCalibration(Robot robot, boolean realRun){
+        // CALIBRATION
+        if (realRun) {
+            calibrationCounter++;
+            // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
+            // OTHERWISE CALIBRATE LEFT
+            if (calibrationCounter >= CALIBRATION_LIMIT){
+                if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
+                    calibrationCounter = 0;
+                } else if (robot.canCalibrateLeft()) {
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
+                    calibrationCounter = 0;
+                }
+            }
+        }
+        else {
+            //SHOW CALIBRATION PROCESS ON SIMULATOR
+            System.out.println("Simulation C");
+            calibrationCounter++;
+            if (calibrationCounter >= CALIBRATION_LIMIT){
+                if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
+                    System.out.println("CFL "+robot.getOrientation());
+                    calibrationCounter = 0;
+                } else if (robot.canCalibrateLeft()) {
+                    System.out.println("CL "+robot.getOrientation());
+                    calibrationCounter = 0;
+                }
+            }
+        }
     }
 
     private void stepTaken(){
