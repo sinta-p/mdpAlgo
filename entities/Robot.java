@@ -73,10 +73,68 @@ public class Robot {
         return orientation;
     }
 
-    public boolean canCalibrateFront() { return true; }//TODO:
+    /**
+     * Test if the robot can calibrate on the left
+     * @return
+     */
+    public boolean canCalibrateLeft() {
+        for (int i = 0; i < ROBOT_SIZE; i++) {
+            if (i == 1) continue;
+            if (orientation == NORTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX - 1, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == SOUTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + 3, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == EAST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY - 1)) {
+                    return false;
+                }
+            } else if (orientation == WEST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY + 3)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-    public boolean canCalibrateLeft() {//TODO:
-	    return true;
+    /**
+     * Test if the robot can calibrate in front
+     * @return
+     */
+    public boolean canCalibrateFront() {
+        for (int i = 0; i < ROBOT_SIZE; i++) {
+            if (i == 1) continue;
+            if (orientation == NORTH) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY - 1)) {
+                    return false;
+                }
+            } else if (orientation == SOUTH) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY + 3)) {
+                    return false;
+                }
+            } else if (orientation == EAST) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + 3, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == WEST) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX - 1, posY + i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void setOrientation(int direction) {

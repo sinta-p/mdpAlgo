@@ -15,7 +15,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private int sleepDuration;
     private static final int START_X = 0;
     private static final int START_Y = 17;
-    private static final int CALIBRATION_LIMIT = 5;
+    private static final int CALIBRATION_LIMIT = 4;
     public ExplorationAlgorithmRunner(int speed){
         sleepDuration = 1000 / speed;
     }
@@ -191,38 +191,32 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         boolean turned = leftWallFollower(robot, grid, realRun);
 
         if (turned) {
-//            // CALIBRATION
-//            if (realRun) {
-//                calibrationCounter++;
-//                // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
-//                // OTHERWISE CALIBRATE LEFT
-//                if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-//                    calibrationCounter = 0;
-//                } else if (robot.canCalibrateFront()) {
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-//                    calibrationCounter = 0;
-//                } else if (calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateLeft()) {
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
-//                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-//                    calibrationCounter = 0;
-//                }
-//            }
-//            else {
-//                //SHOW CALIBRATION PROCESS ON SIMULATOR
-//                calibrationCounter++;
-//                if ((robot.canCalibrateFront()|| calibrationCounter >= CALIBRATION_LIMIT) && robot.canCalibrateLeft()){
-//                    robot.turn(LEFT);
-//                    robot.turn(RIGHT);
-//                    calibrationCounter = 0;
-//                }  else if (robot.canCalibrateFront()) {
-//                    calibrationCounter = 0;
-//                }
-//            }
+            // CALIBRATION
+            if (realRun) {
+                calibrationCounter++;
+                // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
+                // OTHERWISE CALIBRATE LEFT
+                if (calibrationCounter >= CALIBRATION_LIMIT){
+                    if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
+                        SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
+                            calibrationCounter = 0;
+                    } else if (robot.canCalibrateLeft()) {
+                        SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
+                        calibrationCounter = 0;
+                    }
+                }
+            }
+            else {
+                //SHOW CALIBRATION PROCESS ON SIMULATOR
+                calibrationCounter++;
+                if ((robot.canCalibrateFront()|| calibrationCounter >= CALIBRATION_LIMIT) && robot.canCalibrateLeft()){
+                    robot.turn(LEFT);
+                    robot.turn(RIGHT);
+                    calibrationCounter = 0;
+                }  else if (robot.canCalibrateFront()) {
+                    calibrationCounter = 0;
+                }
+            }
 
             // SENSE AFTER CALIBRATION
             senseAndUpdateAndroid(robot, grid, realRun);
