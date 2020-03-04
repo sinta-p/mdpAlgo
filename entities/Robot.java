@@ -177,6 +177,31 @@ public class Robot {
         return false;
     }
 
+    public boolean canTakePhotoFront() {
+        if (orientation == NORTH) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY - 1)) {
+                return true;
+            }
+        } else if (orientation == SOUTH) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY + 3)) {
+                return true;
+            }
+        } else if (orientation == EAST) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 3, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == WEST) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX - 1, posY + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isObstacleRight() {
         for (int i = 0; i < ROBOT_SIZE; i++) {
             if (orientation == NORTH) {
@@ -212,7 +237,7 @@ public class Robot {
                     return true;
                 }
             } else if (orientation == SOUTH) {
-                // DIRECTLY BESIDE OF ROBOT
+                // DIRECTisObstacleLeftLY BESIDE OF ROBOT
                 if (map.getIsObstacle(posX + 3, posY + i)) {
                     return true;
                 }
@@ -230,11 +255,36 @@ public class Robot {
         }
         return false;
     }
-    
-    
-    
-	
-	//discuss degree of movement: turn left, turn right etc. 
+
+    public boolean canTakePhotoLeft() {
+        if (orientation == NORTH) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX - 1, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == SOUTH) {
+            // DIRECTisObstacleLeftLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 3, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == EAST) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY - 1)) {
+                return true;
+            }
+        } else if (orientation == WEST) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY + 3)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+    //discuss degree of movement: turn left, turn right etc.
 	public void move() {
 		int oldX = posX ;
 		int oldY = posY ;
