@@ -54,7 +54,6 @@ public class RealRunButtonListener implements ActionListener {
 
             List<Integer> waypoints = null;
             while (waypoints == null && (waypoints = CommMgr.parseMessage(msg))==null) {
-                System.out.println("Entered");
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
 
