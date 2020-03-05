@@ -201,10 +201,10 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
         // MOVE FORWARD
         if (realRun)
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "1");
+            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
         robot.move();
         if (!realRun)
-        stepTaken();
+            stepTaken();
 
         // SENSE BEFORE CALIBRATION
         senseAndUpdateAndroid(robot, grid, realRun);

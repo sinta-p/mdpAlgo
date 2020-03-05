@@ -250,7 +250,7 @@ public interface AlgorithmRunner {
         for (String action : actions) {
             if (action.equals("L") || action.equals("R") || action.equals("U") || action.equals("C")) {
                 if (moveCounter != 0) {
-                    builder.append("M");
+                    //builder.append("M");
                     builder.append(moveCounter);
                     moveCounter = 0;
                 }
@@ -260,7 +260,7 @@ public interface AlgorithmRunner {
             }
         }
         if (moveCounter != 0) {
-            builder.append("M");
+            //builder.append("M");
             builder.append(moveCounter);
         }
 
