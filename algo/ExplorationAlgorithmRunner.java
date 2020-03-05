@@ -15,7 +15,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private int sleepDuration;
     private static final int START_X = 0;
     private static final int START_Y = 17;
-    private static final int CALIBRATION_LIMIT = 2;
+    private static final int CALIBRATION_LIMIT = 3;
     private int calibrationCounter = 0;
 
     public ExplorationAlgorithmRunner(int speed){
@@ -81,8 +81,8 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
         // MAIN LOOP (LEFT-WALL-FOLLOWER)
         while (!endZoneFlag || !startZoneFlag) {
-            calibrationCounter = moveAndSense(grid, robot, realRun, calibrationCounter);
-            System.out.println(endZoneFlag+ " "+startZoneFlag+ " "+robot.getPosX()+","+robot.getPosY());
+            moveAndSense(grid, robot, realRun);
+            System.out.println(calibrationCounter+" "+endZoneFlag+ " "+startZoneFlag+ " "+robot.getPosX()+","+robot.getPosY());
             if (GridMap.isInEndZone(robot.getPosX(), robot.getPosY())) {
                 endZoneFlag = true;
             }
@@ -124,10 +124,10 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                             ||findPathAndMove(grid, robot,x-1 , y, realRun)
                             ||findPathAndMove(grid, robot,x , y+1, realRun)
                             ||findPathAndMove(grid, robot,x , y-1, realRun))) {
-                        calibrationCounter = moveAndSense(grid, robot, realRun, calibrationCounter);
+                        moveAndSense(grid, robot, realRun);
                     }
                     while (exploreChecker.getIsExplored(robot.getPosX(), robot.getPosY()) != grid.getIsExplored(robot.getPosX(), robot.getPosY())){
-                        calibrationCounter = moveAndSense(grid, robot, realRun, calibrationCounter);
+                        moveAndSense(grid, robot, realRun);
                     }
                     if (grid.checkExploredPercentage() == 100) { // IF FULLEST EXPLORED, EXIT AND GO TO START
                         break;
@@ -190,7 +190,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
     }
 
-    private int moveAndSense(GridMap grid, Robot robot, boolean realRun, int calibrationCounter) {
+    private void moveAndSense(GridMap grid, Robot robot, boolean realRun) {
         boolean turned = leftWallFollower(robot, grid, realRun);
 
         if (turned) {
@@ -205,6 +205,9 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         robot.move();
         if (!realRun)
         stepTaken();
+
+        // SENSE BEFORE CALIBRATION
+        senseAndUpdateAndroid(robot, grid, realRun);
 
         // CALIBRATION
         if (realRun) {
@@ -240,10 +243,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 calibrationCounter = 0;
             }
         }
-
-        // SENSE AFTER CALIBRATIONx
-        senseAndUpdateAndroid(robot, grid, realRun);
-        return calibrationCounter;
     }
 
     /**
