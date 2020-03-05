@@ -201,7 +201,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
         // MOVE FORWARD
         if (realRun)
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M1");
+            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "1");
         robot.move();
         if (!realRun)
         stepTaken();
@@ -214,7 +214,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             calibrationCounter++;
             // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
             if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "A");
                 calibrationCounter = 0;
 
                 // SENSE BEFORE CALIBRATION
@@ -222,7 +222,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             }
             // OTHERWISE CALIBRATE LEFT
             if (calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateLeft()) {
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "B");
                 calibrationCounter = 0;
 
                 // SENSE BEFORE CALIBRATION
