@@ -180,7 +180,8 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     SocketMgr.getInstance().sendMessage(TARGET_ANDROID,
                             CommMgr.generateMapDescriptorMsg(grid.generateDescriptorPartOne(),grid.generateDescriptorPartTwo(),
                                     robot.getCenterPosX(), robot.getCenterPosY(), robot.getOrientation()));
-                stepTaken();
+                if (!realRun)
+                    stepTaken();
             }
             return true;
         } else {
