@@ -216,11 +216,17 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
                 calibrationCounter = 0;
+
+                // SENSE BEFORE CALIBRATION
+                senseAndUpdateAndroid(robot, grid, realRun);
             }
             // OTHERWISE CALIBRATE LEFT
             if (calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateLeft()) {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
                 calibrationCounter = 0;
+
+                // SENSE BEFORE CALIBRATION
+                senseAndUpdateAndroid(robot, grid, realRun);
             }
         }
         else {
@@ -243,6 +249,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 calibrationCounter = 0;
             }
         }
+
     }
 
     /**
@@ -257,8 +264,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         if (robot.isObstacleAhead()) {
             if (robot.isObstacleRight() && robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (ALL 3 SIDES) U-TURNING");
-                doCalibration(robot, realRun);
-
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "U");
                 robot.turn(RIGHT);
@@ -267,7 +272,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 stepTaken();
             } else if (robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (FRONT + LEFT) TURNING RIGHT");
-                doCalibration(robot, realRun);
 
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
@@ -275,7 +279,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 stepTaken();
             } else {
                 System.out.println("OBSTACLE DETECTED! (FRONT) TURNING LEFT");
-                doCalibration(robot, realRun);
 
                 if (realRun)
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
@@ -288,7 +291,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
         else if (!robot.isObstacleLeft()) {
             System.out.println("NO OBSTACLES ON THE LEFT! TURNING LEFT");
-            doCalibration(robot, realRun);
 
             if (realRun)
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
@@ -299,39 +301,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             return true; // TURNED
         }
         return false; // DIDN'T TURN
-    }
-
-    private void doCalibration(Robot robot, boolean realRun){
-        // CALIBRATION
-        if (realRun) {
-
-            calibrationCounter++;
-            // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
-            // OTHERWISE CALIBRATE LEFT
-            if (calibrationCounter >= CALIBRATION_LIMIT){
-                if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CFL");
-                    calibrationCounter = 0;
-                } else if (robot.canCalibrateLeft()) {
-                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "CL");
-                    calibrationCounter = 0;
-                }
-            }
-        }
-        else {
-            //SHOW CALIBRATION PROCESS ON SIMULATOR
-            System.out.println("Simulation C");
-            calibrationCounter++;
-            if (calibrationCounter >= CALIBRATION_LIMIT){
-                if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-                    System.out.println("CFL "+robot.getOrientation());
-                    calibrationCounter = 0;
-                } else if (robot.canCalibrateLeft()) {
-                    System.out.println("CL "+robot.getOrientation());
-                    calibrationCounter = 0;
-                }
-            }
-        }
     }
 
     private void stepTaken(){
