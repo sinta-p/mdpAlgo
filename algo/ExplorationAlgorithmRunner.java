@@ -304,6 +304,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private void doCalibration(Robot robot, boolean realRun){
         // CALIBRATION
         if (realRun) {
+
             calibrationCounter++;
             // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
             // OTHERWISE CALIBRATE LEFT
