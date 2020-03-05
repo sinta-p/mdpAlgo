@@ -308,7 +308,7 @@ public class ImageExpAlgorithmRunner implements AlgorithmRunner {
                 robot.turn(RIGHT);
                 robot.turn(RIGHT);
                 if (!realRun)
-                stepTaken();
+                    stepTaken();
             } else if (robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (FRONT + LEFT) TURNING RIGHT");
                 if (realRun)
