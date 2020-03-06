@@ -19,12 +19,12 @@ public class MdpApp {
 		
 		GridMap grid = new GridMap();
 		//setObstaclesMap(grid);
-		Sensor sensor4 = new Sensor(2, 0, 0, LEFT, 3);
-		Sensor sensor5 = new Sensor(2, 2, 0, RIGHT, 3);
-		Sensor sensor3 = new Sensor(2, 0, 0, MIDDLE, 5);
-		Sensor sensor1 = new Sensor(2, 2, 0, MIDDLE, 5);
-		Sensor sensor2 = new Sensor(2, 1, 0, MIDDLE, 3);
-		Sensor sensor6 = new Sensor(6, 2, 1, RIGHT, 1);
+		Sensor sensor4 = new Sensor(2, 0, 0, LEFT, 5);
+		Sensor sensor5 = new Sensor(2, 2, 0, RIGHT, 5);
+		Sensor sensor3 = new Sensor(2, 0, 0, MIDDLE, 8);
+		Sensor sensor1 = new Sensor(2, 2, 0, MIDDLE, 8);
+		Sensor sensor2 = new Sensor(2, 1, 0, MIDDLE, 8);
+		Sensor sensor6 = new Sensor(6, 2, 1, RIGHT, 2);
 		List<Sensor> sensors = new ArrayList<>();
 		sensors.add(sensor1);
 		sensors.add(sensor2);

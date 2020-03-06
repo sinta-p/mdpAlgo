@@ -420,7 +420,10 @@ public class Robot {
                 int y = allSensors.get(i).getActualPosY();
                 if (i==5 && returnedDistance == 8){
                     updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability());
-                }else
+                } else if (i==5 && returnedDistance == 5){
+                    updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability()/2);
+                }
+                else
                 updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
             }
         } else {
