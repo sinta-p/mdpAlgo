@@ -227,6 +227,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
                 // SENSE BEFORE CALIBRATION
                 senseAndUpdateAndroid(robot, grid, realRun);
+            } else if(calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateFront()) {
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
+                calibrationCounter = 0;
+
+                // SENSE BEFORE CALIBRATION
+                senseAndUpdateAndroid(robot, grid, realRun);
             }
         }
         else {
@@ -234,7 +240,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
             calibrationCounter++;
             if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
-                System.out.println("CALIBRATION FRONT");
+                System.out.println("CALIBRATION FRONT LEFT");
                 robot.turn(LEFT);
                 stepTaken();
                 robot.turn(RIGHT);
@@ -247,6 +253,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 stepTaken();
                 robot.turn(RIGHT);
                 calibrationCounter = 0;
+            }else if(calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateFront()) {
+                System.out.println("CALIBRATION FRONT");
+                calibrationCounter = 0;
+
+                // SENSE BEFORE CALIBRATION
+                senseAndUpdateAndroid(robot, grid, realRun);
             }
         }
 
@@ -264,8 +276,11 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         if (robot.isObstacleAhead()) {
             if (robot.isObstacleRight() && robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (ALL 3 SIDES) U-TURNING");
-                if (realRun)
-                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "U");
+                if (realRun) {
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+                    senseAndUpdateAndroid(robot, grid,realRun);
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+                }
                 robot.turn(RIGHT);
                 robot.turn(RIGHT);
                 //if (!realRun)
