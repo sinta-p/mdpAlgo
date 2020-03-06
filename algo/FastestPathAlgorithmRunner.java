@@ -38,7 +38,7 @@ public class FastestPathAlgorithmRunner implements AlgorithmRunner {
         // wait for start up message
         if (realRun) {
             String msg = SocketMgr.getInstance().receiveMessage(false);
-            while (!msg.equals("fps")) {
+            while (!msg.equals("startfp")) {
                 msg = SocketMgr.getInstance().receiveMessage(false);
             }
         }
@@ -84,6 +84,7 @@ public class FastestPathAlgorithmRunner implements AlgorithmRunner {
                 //}
                 // SEND ENTIRE PATH AT ONCE
                 String compressedPath = AlgorithmRunner.compressPath(path1);
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "F");
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, compressedPath);
                 // SIMULATE AT THE SAME TIME
                 for (String action : path1) {

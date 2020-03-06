@@ -1,8 +1,11 @@
 package entities;
 
+import java.io.*;
 import java.util.List;
 import constant.EntitiesConstants;
 import connection.SocketMgr;
+import simInterface.ReplayButtonListener;
+
 import static constant.EntitiesConstants.*;
 
 import java.beans.PropertyChangeEvent;
@@ -21,7 +24,9 @@ public class Robot {
 	private GridMap map;
 	private List<Sensor> allSensors;
 	private PropertyChangeSupport support;
-	
+    File file=new File("sensorReading.txt");    //creates a new file instance
+    FileReader fr= null;   //reads the file
+    BufferedReader br= null;
 	
 	
 	public Robot(GridMap grid, List<Sensor> sensors) {
@@ -68,10 +73,68 @@ public class Robot {
         return orientation;
     }
 
-    public boolean canCalibrateFront() { return true; }//TODO:
+    /**
+     * Test if the robot can calibrate on the left
+     * @return
+     */
+    public boolean canCalibrateLeft() {
+        for (int i = 0; i < ROBOT_SIZE; i++) {
+            if (i == 1) continue;
+            if (orientation == NORTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX - 1, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == SOUTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + 3, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == EAST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY - 1)) {
+                    return false;
+                }
+            } else if (orientation == WEST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY + 3)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-    public boolean canCalibrateLeft() {//TODO:
-	    return true;
+    /**
+     * Test if the robot can calibrate in front
+     * @return
+     */
+    public boolean canCalibrateFront() {
+        for (int i = 0; i < ROBOT_SIZE; i++) {
+            if (i == 1) continue;
+            if (orientation == NORTH) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY - 1)) {
+                    return false;
+                }
+            } else if (orientation == SOUTH) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY + 3)) {
+                    return false;
+                }
+            } else if (orientation == EAST) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX + 3, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == WEST) {
+                // DIRECTLY IN FRONT OF ROBOT
+                if (!map.getIsObstacle(posX - 1, posY + i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void setOrientation(int direction) {
@@ -114,6 +177,31 @@ public class Robot {
         return false;
     }
 
+    public boolean canTakePhotoFront() {
+        if (orientation == NORTH) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY - 1)) {
+                return true;
+            }
+        } else if (orientation == SOUTH) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY + 3)) {
+                return true;
+            }
+        } else if (orientation == EAST) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 3, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == WEST) {
+            // DIRECTLY IN FRONT OF ROBOT
+            if (map.getIsOnlyObstacle(posX - 1, posY + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isObstacleRight() {
         for (int i = 0; i < ROBOT_SIZE; i++) {
             if (orientation == NORTH) {
@@ -149,7 +237,7 @@ public class Robot {
                     return true;
                 }
             } else if (orientation == SOUTH) {
-                // DIRECTLY BESIDE OF ROBOT
+                // DIRECTisObstacleLeftLY BESIDE OF ROBOT
                 if (map.getIsObstacle(posX + 3, posY + i)) {
                     return true;
                 }
@@ -167,11 +255,36 @@ public class Robot {
         }
         return false;
     }
-    
-    
-    
-	
-	//discuss degree of movement: turn left, turn right etc. 
+
+    public boolean canTakePhotoLeft() {
+        if (orientation == NORTH) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX - 1, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == SOUTH) {
+            // DIRECTisObstacleLeftLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 3, posY + 1)) {
+                return true;
+            }
+        } else if (orientation == EAST) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY - 1)) {
+                return true;
+            }
+        } else if (orientation == WEST) {
+            // DIRECTLY BESIDE OF ROBOT
+            if (map.getIsOnlyObstacle(posX + 1, posY + 3)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+    //discuss degree of movement: turn left, turn right etc.
 	public void move() {
 		int oldX = posX ;
 		int oldY = posY ;
@@ -225,8 +338,13 @@ public class Robot {
 	}
 	
 	 public void reset() {
-		 support.firePropertyChange("posX", this.posX, START_POS_X);
-		 support.firePropertyChange("posY", this.posY, START_POS_Y);
+	     int oldposX = this.posX;
+	     int oldposY = this.posY;
+	     posX =START_POS_X;
+	     posY=START_POS_Y;
+         orientation = NORTH;
+		 support.firePropertyChange("posX", oldposX, START_POS_X);
+		 support.firePropertyChange("posY", oldposY, START_POS_Y);
 		 support.firePropertyChange("orientation", this.orientation, NORTH);
 	 }
 
@@ -278,15 +396,20 @@ public class Robot {
 
     public void sense(boolean realRun) {
         if (realRun) {
-            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
+            //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
             String sensorData = SocketMgr.getInstance().receiveMessage(true);
-            
             //while sensor never reply, send message again
             while (sensorData == null) {
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
+                //SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "S");
                 sensorData = SocketMgr.getInstance().receiveMessage(true);
             }
-            
+            try {
+                FileWriter f = new FileWriter("sensorReading.txt",true);
+                f.write(sensorData+"\n");
+                f.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //
             String[] sensorReadings = sensorData.split(",", allSensors.size());
             for (int i = 0; i < allSensors.size(); i++) {
@@ -295,16 +418,51 @@ public class Robot {
                 int range = allSensors.get(i).getRange();
                 int x = allSensors.get(i).getActualPosX();
                 int y = allSensors.get(i).getActualPosY();
+                if (i==5 && returnedDistance == 8){
+                    updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability());
+                } else if (i==5 && returnedDistance == 5){
+                    updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability()/2);
+                }
+                else
                 updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
             }
         } else {
-            for (Sensor sensor : allSensors) {
-                int returnedDistance = sensor.sense(map);
-                int heading = sensor.getActualOrientation();
-                int range = sensor.getRange();
-                int x = sensor.getActualPosX();
-                int y = sensor.getActualPosY();
-                updateMap(returnedDistance, heading, range, x, y, false, sensor.getReliability());
+            if (ReplayButtonListener.isReplay){
+                try {
+                    if(fr == null){
+                        fr = new FileReader(file);
+                        br=new BufferedReader(fr);  //creates a buffering character input stream
+                    }
+                    String line = null;
+                    if ((line = br.readLine())!= null){
+                        String[] sensorReadings = line.split(",", allSensors.size());
+                        for (int i = 0; i < allSensors.size(); i++) {
+                            int returnedDistance = Integer.parseInt(sensorReadings[i]);
+                            int heading = allSensors.get(i).getActualOrientation();
+                            int range = allSensors.get(i).getRange();
+                            int x = allSensors.get(i).getActualPosX();
+                            int y = allSensors.get(i).getActualPosY();
+                            if (i==5 && returnedDistance == 8){
+                                updateMap(-1, heading, range, x, y, true, allSensors.get(i).getReliability());
+                            }else
+                                updateMap(returnedDistance, heading, range, x, y, true, allSensors.get(i).getReliability());
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                for (Sensor sensor : allSensors) {
+                    int returnedDistance = sensor.sense(map);
+                    int heading = sensor.getActualOrientation();
+                    int range = sensor.getRange();
+                    int x = sensor.getActualPosX();
+                    int y = sensor.getActualPosY();
+                    updateMap(returnedDistance, heading, range, x, y, false, sensor.getReliability());
+                }
             }
         }
     }

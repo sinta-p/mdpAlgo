@@ -48,6 +48,10 @@ public class GridMap {
         return isOutOfArena(x, y) || map[x][y].getIsObstacle();
     }
 
+    public boolean getIsOnlyObstacle(int x, int y) {
+        return isOutOfArena(x,y) ? false: map[x][y].getIsObstacle();
+    }
+
     public boolean isOutOfArena(int x, int y) {
         return x < 0 || y < 0 || x >= MAP_COLS || y >= MAP_ROWS;
     }
@@ -219,8 +223,8 @@ public class GridMap {
         for (int i = 0; i < part1.length() / 4; i++) {
             builder.append(Integer.toHexString(Integer.parseInt(part1.substring(i * 4, (i + 1) * 4), 2)));
         }
-        System.out.println("Map descriptor part 1:");
-        System.out.println(builder.toString());
+        //System.out.println("Map descriptor part 1:");
+        //System.out.println(builder.toString());
 
         return builder.toString();
     }

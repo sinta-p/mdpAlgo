@@ -9,38 +9,49 @@ import connection.SocketMgr;
 import entities.GridMap;
 import entities.Robot;
 
-public class printHexButtonListener implements ActionListener {
+public class PrintHexButtonListener implements ActionListener {
 	
 
 	private Simulator cSim;
 	private GridMap cGrid;
 	private Robot cRobot;
-	private String obstacleString="";
-	private String exploredString="";
+	private String obstacleString = "";
+	private String exploredString = "";
+
+
 	private StringBuilder finalOutput;
 	
 	
-	public printHexButtonListener(Simulator curSim,GridMap grid, Robot robot) {
+	public PrintHexButtonListener(Simulator curSim, GridMap grid, Robot robot) {
 		cSim = curSim;
 		cGrid =grid;
 		cRobot = robot;
-		cSim.addprintHexButtonListener(this);
+		cSim.addPrintHexButtonListener(this);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		for(int y = 0; y< MAP_ROWS; y++) {
+
+		exploredString = "11";
+		obstacleString = "";
+		for(int y = MAP_ROWS-1; y >=0; y--) {
 			for(int x = 0; x< MAP_COLS ;x++) {
 				exploredString+=(cGrid.getIsExplored(x, y)?1:0);
 			}
 		}
 
-		for(int y = 0; y< MAP_ROWS; y++) {
+		for(int y = MAP_ROWS-1; y >= 0; y--) {
 			for(int x = 0; x< MAP_COLS ;x++) {
-				obstacleString+=(cGrid.getIsObstacle(x, y)?1:0);
+				if(cGrid.getIsExplored(x,y))
+					obstacleString+=(cGrid.getIsObstacle(x, y)?1:0);
 			}
 		}
+
+		while(0!= obstacleString.length()%8){
+			obstacleString+="0";
+		}
+
+		exploredString+=(11);
 		
 		finalOutput = new StringBuilder("A|");
 		finalOutput.append(cRobot.getPosX());
