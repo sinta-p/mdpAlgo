@@ -19,7 +19,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private static final int CALIBRATION_LIMIT = 3;
     private int calibrationCounter = 0;
     private ArrayList<String> actionString = new ArrayList<>();
-    private ArrayList<String> pattern = new ArrayList<>(Arrays.asList("M","L","M","L","M","L","M","L"));
+    private ArrayList<String> pattern = new ArrayList<>(Arrays.asList("L","M","L","M","L","M","L","M"));
     public ExplorationAlgorithmRunner(int speed){
         sleepDuration = 1000 / speed;
     }
@@ -148,30 +148,60 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         robot.reset();
     }
 
-    private void breakLoop(Robot robot, boolean realRun) {
+    private void phantomBlockTest(Robot robot, GridMap map) {
+        if (robot.getPosX()==4 && robot.getPosY() ==12){
+            map.setIsObstacle(3,13,false);
+        }
+    }
+
+    private void breakLoop(Robot robot, boolean realRun ,GridMap grid) {
         for (int i=0; i<8;i++){
             if (!actionString.get(actionString.size()-8+i).equals(pattern.get(i)))
                 return;
         }
 
-        while (!robot.isObstacleAhead()){
-            System.out.println("Break");
-            // MOVE FORWARD
-            if (realRun)
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
-            robot.move();
-            if (!realRun)
-                stepTaken();
-            actionString.add("M");
+        // Roll Back one step
+        if (realRun) {
+            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "D");
+            senseAndUpdateAndroid(robot, grid, realRun);
         }
-        if (!robot.isObstacleRight()){
-            if (realRun)
-                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-            robot.turn(RIGHT);
-            if (!realRun)
-                stepTaken();
-            actionString.add("R");
-        }
+        robot.moveBackward();
+        actionString.add("D");
+
+        if (!realRun)
+            stepTaken();
+        // U turn, then find a wall to follow
+//        if (realRun) {
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//            senseAndUpdateAndroid(robot, grid,realRun);
+//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//            senseAndUpdateAndroid(robot, grid,realRun);
+//        }
+//        actionString.add("R");
+//        actionString.add("R");
+//        robot.turn(RIGHT);
+//        robot.turn(RIGHT);
+//        if (!realRun)
+//            stepTaken();
+//
+//        while (!robot.isObstacleAhead()){
+//            System.out.println("Break");
+//            // MOVE FORWARD
+//            if (realRun)
+//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+//            robot.move();
+//            if (!realRun)
+//                stepTaken();
+//            actionString.add("M");
+//        }
+//        if (!robot.isObstacleRight()){
+//            if (realRun)
+//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//            robot.turn(RIGHT);
+//            if (!realRun)
+//                stepTaken();
+//            actionString.add("R");
+//        }
     }
 
     private boolean findPathAndMove(GridMap grid, Robot robot, int x, int y, boolean realRun) {
@@ -230,14 +260,40 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         // MOVE FORWARD
         if (realRun)
             SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+
         robot.move();
         actionString.add("M");
 
         if (!realRun)
             stepTaken();
 
+        //phantomBlockTest(robot,grid);
+
         // SENSE BEFORE CALIBRATION
         senseAndUpdateAndroid(robot, grid, realRun);
+
+        //DOUBLE CHECK IF FIND UNCERTAINTY ON THE LEFT
+        if (robot.isMapChanged()){
+            System.out.println("Double check for uncertain left wall..");
+            if (!realRun)
+                stepTaken();
+//            // Choose to rollback
+//            if (realRun)
+//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "D");
+//            robot.moveBackward();
+            // Use front sensors to check
+            if (realRun) {
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+            }
+            robot.turn(LEFT);
+            stepTaken();
+            robot.turn(RIGHT);
+
+            if (!realRun)
+                stepTaken();
+            senseAndUpdateAndroid(robot, grid, realRun);
+        }
 
         // CALIBRATION
         if (realRun) {
@@ -293,7 +349,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
 
         if (actionString.size()>8)
-            breakLoop(robot, realRun);
+            breakLoop(robot, realRun, grid);
     }
 
     /**
@@ -317,8 +373,8 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 actionString.add("R");
                 robot.turn(RIGHT);
                 robot.turn(RIGHT);
-                //if (!realRun)
-                stepTaken();
+                if (!realRun)
+                    stepTaken();
             } else if (robot.isObstacleLeft()) {
                 System.out.println("OBSTACLE DETECTED! (FRONT + LEFT) TURNING RIGHT");
 
@@ -326,6 +382,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
                 robot.turn(RIGHT);
                 actionString.add("R");
+                if (!realRun)
                 stepTaken();
             } else {
                 System.out.println("OBSTACLE DETECTED! (FRONT) TURNING LEFT");
@@ -334,6 +391,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
                 robot.turn(LEFT);
                 actionString.add("L");
+                if (!realRun)
                 stepTaken();
             }
             System.out.println("-----------------------------------------------");
@@ -347,6 +405,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
             robot.turn(LEFT);
             actionString.add("L");
+            if (!realRun)
             stepTaken();
             System.out.println("-----------------------------------------------");
 

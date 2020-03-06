@@ -20,7 +20,7 @@ public class MdpApp {
 		GridMap grid = new GridMap();
 		//setObstaclesMap(grid);
 		Sensor sensor4 = new Sensor(2, 0, 0, LEFT, 5);
-		Sensor sensor5 = new Sensor(2, 2, 0, RIGHT, 5);
+		Sensor sensor5 = new Sensor(2, 0, 1, LEFT, 5);
 		Sensor sensor3 = new Sensor(2, 0, 0, MIDDLE, 8);
 		Sensor sensor1 = new Sensor(2, 2, 0, MIDDLE, 8);
 		Sensor sensor2 = new Sensor(2, 1, 0, MIDDLE, 8);

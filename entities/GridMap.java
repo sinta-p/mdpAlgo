@@ -72,7 +72,8 @@ public class GridMap {
     public boolean getIsExplored(int x, int y) {
         return !isOutOfArena(x, y) && map[x][y].getIsVisited();
     }
-	
+
+    public boolean getIsChanged(int x, int y) { return !isOutOfArena(x, y) && map[x][y].getIsChanged();}
 	
 	//preset of obstacle
 	public void presetObstacles() {
@@ -199,6 +200,7 @@ public class GridMap {
     public void setObstacleProbability(int x, int y, int value) {
         if (isOutOfArena(x, y))
             return;
+        System.out.print(x+","+y+"\t");
         map[x][y].updateCounter(value);
     }
 

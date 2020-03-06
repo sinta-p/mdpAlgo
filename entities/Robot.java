@@ -317,10 +317,6 @@ public class Robot {
 		
 		support.firePropertyChange("posX",oldX,posX);
 		support.firePropertyChange("posY",oldY,posY);
-
-		
-		
-		
 	}
 	
 	public void turn(int direction) {
@@ -378,17 +374,9 @@ public class Robot {
             map.setExplored(xToUpdate, yToUpdate, true);
             // if this cell is an obstacle
             if (i == distance && obstacleAhead) {
-                if (realRun) {
-                    map.setObstacleProbability(xToUpdate, yToUpdate, reliability); // increment by reliability
-                } else {
-                    map.setIsObstacle(xToUpdate, yToUpdate, true);
-                }
+                map.setObstacleProbability(xToUpdate, yToUpdate, reliability); // increment by reliability
             } else { // if this cell is not an obstacle
-                if (realRun) {
-                    map.setObstacleProbability(xToUpdate, yToUpdate, -reliability); // decrement by reliability
-                } else {
-                    map.setIsObstacle(xToUpdate, yToUpdate, false);
-                }
+                map.setObstacleProbability(xToUpdate, yToUpdate, -reliability); // decrement by reliability
             }
         }
     }
@@ -467,4 +455,72 @@ public class Robot {
         }
     }
 
+    public boolean isMapChanged() {
+        int x;
+        int y;
+        if (orientation == NORTH) { // Limit position to prevent wall crash
+            for (int i = 0; i < 2; ++i) {
+                x = posX-1;
+                y = posY+1;
+                if (map.getIsChanged(x-i,y))
+                    return true;
+            }
+        } else if (orientation == SOUTH) {// Limit position to prevent wall crash
+            for (int i = 0; i < 2; ++i) {
+                x = posX+3;
+                y = posY+1;
+                if (map.getIsChanged(x+i,y))
+                    return true;
+            }
+        } else if (orientation == WEST) { // Limit position to prevent wall crash
+            for (int i = 0; i < 2; ++i) {
+                x = posX+1;
+                y = posY+3;
+                if (map.getIsChanged(x,y+i))
+                    return true;
+            }
+        } else if (orientation == EAST) { // Limit position to prevent wall crash
+            for (int i = 0; i < 2; ++i) {
+                x = posX+1;
+                y = posY-1;
+                if (map.getIsChanged(x,y-i))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public void moveBackward() {
+        int oldX = posX ;
+        int oldY = posY ;
+
+        if (orientation == NORTH) { // Limit position to prevent wall crash
+            posY++;
+            for (int i = 0; i < 3; ++i) {
+                map.setIsObstacle(posX + i, posY, false);
+                map.setExplored(posX + i, posY, true);
+            }
+        } else if (orientation == SOUTH) {// Limit position to prevent wall crash
+            posY--;
+            for (int i = 0; i < 3; ++i) {
+                map.setIsObstacle(posX + i, posY + 2, false);
+                map.setExplored(posX + i, posY + 2, true);
+            }
+        } else if (orientation == WEST) { // Limit position to prevent wall crash
+            posX++;
+            for (int i = 0; i < 3; ++i) {
+                map.setIsObstacle(posX, posY + i, false);
+                map.setExplored(posX, posY + i, true);
+            }
+        } else if (orientation == EAST) { // Limit position to prevent wall crash
+            posX--;
+            for (int i = 0; i < 3; ++i) {
+                map.setIsObstacle(posX + 2, posY + i, false);
+                map.setExplored(posX + 2, posY + i, true);
+            }
+        }
+
+        support.firePropertyChange("posX",oldX,posX);
+        support.firePropertyChange("posY",oldY,posY);
+    }
 }

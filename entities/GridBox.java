@@ -9,7 +9,9 @@ public class GridBox implements Comparable <GridBox> {
     private int y;
     private int dist;
 	private boolean obstacle = false;
-	private boolean visited = false ;
+	private boolean visited = false;
+	private boolean changed = false;
+	private boolean last = false;
 	private int prob = 0;
 	private PropertyChangeSupport support;
 
@@ -39,6 +41,8 @@ public class GridBox implements Comparable <GridBox> {
 		support.firePropertyChange("visited",this.visited,visited);
 		this.visited = visited;
 	}
+
+	public boolean getIsChanged() {return changed;}
 
 	public int getX() {
 	        return x;
@@ -104,7 +108,14 @@ public class GridBox implements Comparable <GridBox> {
     void updateCounter(int value) {
         prob += value;
         obstacle = prob > 0;
-    }
+		if (last^obstacle){
+			this.changed = true;
+		} else{
+			this.changed = false;
+		}
+		System.out.println(prob+"\t"+obstacle+"\t"+changed);
+		last = obstacle;
+	}
 	
 
 }
