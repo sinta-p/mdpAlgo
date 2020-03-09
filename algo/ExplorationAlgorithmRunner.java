@@ -252,8 +252,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         boolean turned = leftWallFollower(robot, grid, realRun);
 
         if (turned) {
-
-            // SENSE AFTER CALIBRATION
             senseAndUpdateAndroid(robot, grid, realRun);
         }
 
@@ -275,8 +273,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         //DOUBLE CHECK IF FIND UNCERTAINTY ON THE LEFT
         if (robot.isMapChanged()){
             System.out.println("Double check for uncertain left wall..");
-            if (!realRun)
-                stepTaken();
+
 //            // Choose to rollback
 //            if (realRun)
 //                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "D");
@@ -284,10 +281,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             // Use front sensors to check
             if (realRun) {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+                senseAndUpdateAndroid(robot, grid, realRun);
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
             }
             robot.turn(LEFT);
-            stepTaken();
+            if (!realRun)
+                stepTaken();
             robot.turn(RIGHT);
 
             if (!realRun)

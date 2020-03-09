@@ -113,7 +113,6 @@ public class GridBox implements Comparable <GridBox> {
 		} else{
 			this.changed = false;
 		}
-		System.out.println(prob+"\t"+obstacle+"\t"+changed);
 		last = obstacle;
 	}
 	

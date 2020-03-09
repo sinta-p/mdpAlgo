@@ -200,7 +200,6 @@ public class GridMap {
     public void setObstacleProbability(int x, int y, int value) {
         if (isOutOfArena(x, y))
             return;
-        System.out.print(x+","+y+"\t");
         map[x][y].updateCounter(value);
     }
 
