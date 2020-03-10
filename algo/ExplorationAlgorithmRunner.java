@@ -52,10 +52,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
     private void calibrateAndTurn(Robot robot, boolean realRun) {
         if (realRun) {
-            while (robot.getOrientation() != SOUTH) {
+            while (robot.getOrientation() != NORTH) {
                 robot.turn(LEFT);
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
             }
+            //Do a reset calibration
+            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "P");
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
