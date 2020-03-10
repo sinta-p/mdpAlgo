@@ -17,7 +17,9 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     private static final int START_X = 0;
     private static final int START_Y = 17;
     private static final int CALIBRATION_LIMIT = 3;
+    private static final int RIGHT_LIMIT = 3;
     private int calibrationCounter = 0;
+    private int rightCounter = 0;
     private ArrayList<String> actionString = new ArrayList<>();
     private ArrayList<String> pattern = new ArrayList<>(Arrays.asList("L","M","L","M","L","M","L","M"));
     public ExplorationAlgorithmRunner(int speed){
@@ -42,7 +44,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 //        runExplorationLeftWall(grid, robot, realRun);
 
         // CALIBRATION AFTER EXPLORATION
-        calibrateAndTurn(robot, realRun);
+        calibrateAndTurn(robot, grid, realRun);
 
         // GENERATE MAP DESCRIPTOR, SEND TO ANDROID
         String part1 = grid.generateDescriptorPartOne();
@@ -50,14 +52,16 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         SocketMgr.getInstance().sendMessage(TARGET_ANDROID, CommMgr.generateFinalDescriptor(part1, part2));
     }
 
-    private void calibrateAndTurn(Robot robot, boolean realRun) {
+    private void calibrateAndTurn(Robot robot, GridMap grid, boolean realRun) {
         if (realRun) {
             while (robot.getOrientation() != NORTH) {
                 robot.turn(LEFT);
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+                senseAndUpdateAndroid(robot,grid, realRun);
             }
             //Do a reset calibration
             SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "P");
+            senseAndUpdateAndroid(robot,grid, realRun);
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
 //            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
@@ -221,7 +225,10 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 fakeRobot.setPosY(robot.getPosY());
                 fakeRobot.setOrientation(robot.getOrientation());
                 String compressed = AlgorithmRunner.compressPathForExploration(returnPath, fakeRobot);
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "F");
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, compressed);
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "F");
+                senseAndUpdateAndroid(robot, grid, realRun);
             }
 
             for (String action : returnPath) {
@@ -295,6 +302,27 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 stepTaken();
             senseAndUpdateAndroid(robot, grid, realRun);
         }
+
+//        rightCounter++;
+//        // Extra check for right sie
+//        if (rightCounter >= RIGHT_LIMIT ) {
+//            System.out.println("Extra right sense");
+//
+//            if(realRun) {
+//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+//                senseAndUpdateAndroid(robot, grid, realRun);
+//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+//                senseAndUpdateAndroid(robot, grid, realRun);
+//                rightCounter = 0;
+//            }
+//            else{
+//                robot.turn(RIGHT);
+//                stepTaken();
+//                robot.turn(LEFT);
+//                stepTaken();
+//                rightCounter = 0;
+//            }
+//        }
 
         // CALIBRATION
         if (realRun) {
