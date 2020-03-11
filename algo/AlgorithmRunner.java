@@ -248,7 +248,8 @@ public interface AlgorithmRunner {
         StringBuilder builder = new StringBuilder();
 
         for (String action : actions) {
-            if (action.equals("L") || action.equals("R") || action.equals("U") || action.equals("C")) {
+            if (action.equals("L") || action.equals("R") || action.equals("U") || action.equals("A")
+                    || action.equals("B")|| action.equals("C")|| action.equals("E")|| action.equals("G")) {
                 if (moveCounter != 0) {
                     //builder.append("M");
                     builder.append(moveCounter);
