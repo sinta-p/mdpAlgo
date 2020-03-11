@@ -332,22 +332,28 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "A");
                 calibrationCounter = 0;
 
-                // SENSE BEFORE CALIBRATION
+                // SENSE FOR RIGHT SIDE
+                robot.turn(RIGHT);
                 senseAndUpdateAndroid(robot, grid, realRun);
+                robot.turn(LEFT);
             }
             // OTHERWISE CALIBRATE LEFT
             if (calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateLeft()) {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "B");
                 calibrationCounter = 0;
 
-                // SENSE BEFORE CALIBRATION
+                // SENSE FOR RIGHT SIDE
+                robot.turn(RIGHT);
                 senseAndUpdateAndroid(robot, grid, realRun);
+                robot.turn(LEFT);
             } else if(calibrationCounter >= CALIBRATION_LIMIT && robot.canCalibrateFront()) {
                 SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
                 calibrationCounter = 0;
 
-                // SENSE BEFORE CALIBRATION
+                // SENSE FOR RIGHT SIDE
+                robot.turn(RIGHT);
                 senseAndUpdateAndroid(robot, grid, realRun);
+                robot.turn(LEFT);
             }
         }
         else {
