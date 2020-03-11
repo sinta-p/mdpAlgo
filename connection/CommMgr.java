@@ -58,8 +58,8 @@ public class CommMgr extends EntitiesConstants{
 
         Integer wayPointX, wayPointY;
         try {
-            wayPointX = Integer.parseInt(splitString[0])-1;
-            wayPointY = (MAP_ROWS - Integer.parseInt(splitString[1]) - 1)-1;
+            wayPointX = Integer.parseInt(splitString[0]);
+            wayPointY = MAP_ROWS - Integer.parseInt(splitString[1]);
             waypoint.add(wayPointX);
             waypoint.add(wayPointY);
             return waypoint;
