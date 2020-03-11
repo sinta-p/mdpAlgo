@@ -271,10 +271,10 @@ public interface AlgorithmRunner {
 //    static List<String> insertCalibration(List<String> actions, Robot fakeRobot){
 //        int n = actions.size();
 //        List<String> tmp = new ArrayList<>(actions);
-//        int[] insertions = new int[n];
+//        String[] insertions = new String[n];
 //    }
 //
-//    static int calibrationDP(boolean insertBefore, int l, int[] insertions, List<String> actions, Robot fakeRobot) {
+//    static int calibrationDP(boolean insertBefore, int l, String[] insertions, List<String> actions, Robot fakeRobot) {
 //        int n = actions.size();
 //        if (n<3) {
 //            return 0;
@@ -303,26 +303,25 @@ public interface AlgorithmRunner {
 //            String tmp = null;
 //
 //            if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
-//                res = "A";
+//                tmp = "A";
 //            } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
-//                res = "G";
+//                tmp = "G";
 //            } else if (fakeRobot.canCalibrateFront()) {
-//                res = "C";
+//                tmp = "C";
 //            } else if (fakeRobot.canCalibrateLeft()) {
-//                res = "B";
+//                tmp = "B";
 //            } else if (fakeRobot.canCalibrateRight()) {
-//                res = "E";
+//                tmp = "E";
 //            }
 //
-//            if (!res.equals(null)) {
+//            if (!tmp.equals(null)) {
 //                int count = calibrationDP(true, l, insertions, actions.subList(i+1,n), fakeRobot);
 //                if (count >curMax) {
 //                    curMax = count;
+//                    insertions[l-n+i+1] = tmp;
 //                }
 //            }
 //        }
-//
-//
 //        return curMax;
 //    }
 //
@@ -353,7 +352,7 @@ public interface AlgorithmRunner {
                 counter ++;
             }
             // check calibration
-            if (counter > 3) {
+            if (counter >= 3) {
                 if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
                     actionWithCalibration.add("A");
                     counter = 0;
