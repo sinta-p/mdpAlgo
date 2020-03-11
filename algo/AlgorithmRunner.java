@@ -266,12 +266,80 @@ public interface AlgorithmRunner {
 
         return builder.toString();
     }
+//
+//    static List<String> insertCalibration(List<String> actions, Robot fakeRobot){
+//        int n = actions.size();
+//        List<String> tmp = new ArrayList<>(actions);
+//        int[] insertions = new int[n];
+//    }
+//
+//    static int calibrationDP(boolean insertBefore, int l, int[] insertions, List<String> actions, Robot fakeRobot) {
+//        int n = actions.size();
+//        if (n<3) {
+//            return 0;
+//        }
+//
+//        int curMax = 0;
+//        String res = null;
+//        for(int i = 0; i<n;i++){
+//            String action = actions.get(i);
+//            if (action.equals("L")) {
+//                fakeRobot.turn(LEFT);
+//            } else if (action.equals("R")) {
+//                fakeRobot.turn(RIGHT);
+//            } else if (action.equals("U")) {
+//                fakeRobot.turn(LEFT);
+//                fakeRobot.turn(LEFT);
+//            } else if (action.equals("M")) {
+//                fakeRobot.move();
+//            }
+//
+//            if (insertBefore) {
+//                if (i < 3) {
+//                    continue;
+//                }
+//            }
+//            String tmp = null;
+//
+//            if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
+//                res = "A";
+//            } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
+//                res = "G";
+//            } else if (fakeRobot.canCalibrateFront()) {
+//                res = "C";
+//            } else if (fakeRobot.canCalibrateLeft()) {
+//                res = "B";
+//            } else if (fakeRobot.canCalibrateRight()) {
+//                res = "E";
+//            }
+//
+//            if (!res.equals(null)) {
+//                int count = calibrationDP(true, l, insertions, actions.subList(i+1,n), fakeRobot);
+//                if (count >curMax) {
+//                    curMax = count;
+//                }
+//            }
+//        }
+//
+//
+//        return curMax;
+//    }
+//
+//    static String actionToString (List<String> actions) {
+//        StringBuilder builder = new StringBuilder();
+//
+//        for (String action : actions) {
+//            builder.append(action);
+//        }
+//        return builder.toString();
+//    }
 
     static String compressPathForExploration(List<String> actions, Robot fakeRobot) {
         List<String> actionWithCalibration = new ArrayList<>();
+        int counter = 0;
         for (String action : actions) {
             actionWithCalibration.add(action); // copy action to new list
-            // execute action on fake robot
+             //execute action on fake robot
             if (action.equals("L")) {
                 fakeRobot.turn(LEFT);
             } else if (action.equals("R")) {
@@ -281,10 +349,26 @@ public interface AlgorithmRunner {
                 fakeRobot.turn(LEFT);
             } else if (action.equals("M")) {
                 fakeRobot.move();
+                counter ++;
             }
             // check calibration
-            if (fakeRobot.canCalibrateFront()) {
-                actionWithCalibration.add("C");
+            if (counter > 3) {
+                if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
+                    actionWithCalibration.add("A");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
+                    actionWithCalibration.add("G");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateFront()) {
+                    actionWithCalibration.add("C");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateLeft()) {
+                    actionWithCalibration.add("B");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateRight()) {
+                    actionWithCalibration.add("E");
+                    counter = 0;
+                }
             }
         }
 

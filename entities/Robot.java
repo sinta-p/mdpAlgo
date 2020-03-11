@@ -523,4 +523,33 @@ public class Robot {
         support.firePropertyChange("posX",oldX,posX);
         support.firePropertyChange("posY",oldY,posY);
     }
+
+    public boolean canCalibrateRight() {
+        for (int i = 0; i < ROBOT_SIZE; i++) {
+            if (i == 1) continue;
+            if (orientation == NORTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + 3, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == SOUTH) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX - 1, posY + i)) {
+                    return false;
+                }
+            } else if (orientation == EAST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY + 3 )) {
+                    return false;
+                }
+            } else if (orientation == WEST) {
+                // DIRECTLY BESIDE OF ROBOT
+                if (!map.getIsObstacle(posX + i, posY - 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
 }
