@@ -108,6 +108,8 @@ public class FastestPathAlgorithmRunner implements AlgorithmRunner {
 //                String compressedPath = AlgorithmRunner.compressPathForExploration(path1,fakeRobot);
 //                System.out.println(compressedPath);
 //
+                String compressedPath = AlgorithmRunner.compressPath(path1);
+                System.out.println(compressedPath);
                 for (String action : path1) {
                     if (action.equals("M")) {
                         robot.move();

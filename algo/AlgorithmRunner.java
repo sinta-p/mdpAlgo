@@ -257,6 +257,10 @@ public interface AlgorithmRunner {
                 }
                 builder.append(action);
             } else if (action.equals("M")) {
+                if (moveCounter==9) {
+                    builder.append(moveCounter);
+                    moveCounter = 0;
+                }
                 moveCounter++;
             }
         }
