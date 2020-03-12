@@ -375,6 +375,70 @@ public interface AlgorithmRunner {
                 }
             }
         }
+        if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
+            actionWithCalibration.add("A");
+        } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
+            actionWithCalibration.add("G");
+        } else if (fakeRobot.canCalibrateFront()) {
+            actionWithCalibration.add("C");
+        } else if (fakeRobot.canCalibrateLeft()) {
+            actionWithCalibration.add("B");
+        } else if (fakeRobot.canCalibrateRight()) {
+            actionWithCalibration.add("E");
+        }
+
+        return compressPath(actionWithCalibration);
+    }
+
+    static String compressPathForFP(List<String> actions, Robot fakeRobot) {
+        List<String> actionWithCalibration = new ArrayList<>();
+        int counter = 0;
+        for (String action : actions) {
+            actionWithCalibration.add(action); // copy action to new list
+            //execute action on fake robot
+            if (action.equals("L")) {
+                fakeRobot.turn(LEFT);
+            } else if (action.equals("R")) {
+                fakeRobot.turn(RIGHT);
+            } else if (action.equals("U")) {
+                fakeRobot.turn(LEFT);
+                fakeRobot.turn(LEFT);
+            } else if (action.equals("M")) {
+                fakeRobot.move();
+                counter ++;
+            }
+            // check calibration
+            if (counter >= 12) {
+                if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
+                    actionWithCalibration.add("A");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
+                    actionWithCalibration.add("G");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateFront()) {
+                    actionWithCalibration.add("C");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateLeft()) {
+                    actionWithCalibration.add("B");
+                    counter = 0;
+                } else if (fakeRobot.canCalibrateRight()) {
+                    actionWithCalibration.add("E");
+                    counter = 0;
+                }
+            }
+        }
+
+        if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
+            actionWithCalibration.add("A");
+        } else if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateRight()) {
+            actionWithCalibration.add("G");
+        } else if (fakeRobot.canCalibrateFront()) {
+            actionWithCalibration.add("C");
+        } else if (fakeRobot.canCalibrateLeft()) {
+            actionWithCalibration.add("B");
+        } else if (fakeRobot.canCalibrateRight()) {
+            actionWithCalibration.add("E");
+        }
 
         return compressPath(actionWithCalibration);
     }

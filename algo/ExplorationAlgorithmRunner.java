@@ -151,7 +151,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
         System.out.println("EXPLORATION COMPLETED!");
         System.out.println("PERCENTAGE OF AREA EXPLORED: " + grid.checkExploredPercentage() + "%!");
-        robot.reset();
+        //robot.reset();
     }
 
     private void phantomBlockTest(Robot robot, GridMap map) {
