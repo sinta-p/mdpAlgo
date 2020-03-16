@@ -4,6 +4,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static constant.EntitiesConstants.*;
 
@@ -166,8 +167,56 @@ public class GridMap {
         }
         return (cellsExplored / totalCells) * 100;
     }
-	 
-	 public void reset() {
+
+    public boolean isInIslandLoop(int x, int y, int heading) {
+        if (heading==NORTH){
+            for (int i = 0;i<3;i++ ){
+                if (checkIslandLoop(x-1,y+i)) return true;
+            }
+        } else if (heading==SOUTH){
+            for (int i = 0;i<3;i++ ){
+                if (checkIslandLoop(x+3,y+i)) return true;
+            }
+        } else if (heading==EAST){
+            for (int i = 0;i<3;i++ ){
+                if (checkIslandLoop(x+i,y-1)) return true;
+            }
+        } else if (heading==WEST){
+            for (int i = 0;i<3;i++ ){
+                if (checkIslandLoop(x+i,y+3)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkIslandLoop(int x, int y) {
+        ArrayList<int[]> toVisit = new ArrayList<>();
+        boolean[][] visited = new boolean[15][20];
+        if (!getIsObstacle(x,y)){
+            return false;
+        }
+        toVisit.add(new int[] {x,y});
+        int[] current;
+	    while (toVisit.size()>0){
+            current = toVisit.remove(0);
+            for(int i = 0; i<7;i++){
+                for (int j=0;j<7;j++){
+                    int tmpx = current[0]-3+i;
+                    int tmpy = current[1]-3+j;
+                    if (isOutOfArena(tmpx,tmpy) || !getIsExplored(tmpx,tmpy)){
+                        return false;
+                    }
+                    if (getIsObstacle(tmpx,tmpy) && !visited[tmpx][tmpy]){
+                        toVisit.add(new int[]{tmpx,tmpy});
+                        visited[tmpx][tmpy] = true;
+                    }
+                }
+            }
+        }
+	    return true;
+    }
+
+    public void reset() {
         for (int x = 0; x < MAP_COLS; x++) {
             for (int y = 0; y < MAP_ROWS; y++) {
                 if (!isInStartZone(x, y) && !isInEndZone(x, y))
