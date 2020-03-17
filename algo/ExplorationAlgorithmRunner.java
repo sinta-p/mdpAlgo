@@ -30,6 +30,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
     public void run(GridMap grid, Robot robot, boolean realRun) {
         grid.reset();
         robot.reset();
+        //islandTest(robot);
         if (realRun) {
             grid.reset();
             String msg = SocketMgr.getInstance().receiveMessage(false);
@@ -50,6 +51,12 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         String part1 = grid.generateDescriptorPartOne();
         String part2 = grid.generateDescriptorPartTwo();
         SocketMgr.getInstance().sendMessage(TARGET_ANDROID, CommMgr.generateFinalDescriptor(part1, part2));
+    }
+
+    private void islandTest(Robot robot) {
+        robot.setPosX(4);
+        robot.setPosY(16);
+        robot.setOrientation(EAST);
     }
 
     private void calibrateAndTurn(Robot robot, GridMap grid, boolean realRun) {
@@ -160,6 +167,32 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         }
     }
 
+    private void breakIslandLoop(Robot robot, boolean realRun ,GridMap grid){
+        //Break Isolated Island Loop
+        if (grid.isInIslandLoop(robot.getPosX(),robot.getPosY(),robot.getOrientation())){
+            System.out.println("Break Isolated Island Loop");
+            while (!robot.isObstacleAhead()){
+                // MOVE FORWARD
+                if (realRun)
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+                robot.move();
+                senseAndUpdateAndroid(robot, grid, realRun);
+                if (!realRun)
+                    stepTaken();
+                actionString.add("M");
+            }
+            if (!robot.isObstacleRight()){
+                if (realRun)
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+                robot.turn(RIGHT);
+                senseAndUpdateAndroid(robot, grid, realRun);
+                if (!realRun)
+                    stepTaken();
+                actionString.add("R");
+            }
+        }
+    }
+
     private void breakLoop(Robot robot, boolean realRun ,GridMap grid) {
         for (int i=0; i<8;i++){
             if (!actionString.get(actionString.size()-8+i).equals(pattern.get(i)))
@@ -176,38 +209,6 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
         if (!realRun)
             stepTaken();
-        // U turn, then find a wall to follow
-//        if (realRun) {
-//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-//            senseAndUpdateAndroid(robot, grid,realRun);
-//            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-//            senseAndUpdateAndroid(robot, grid,realRun);
-//        }
-//        actionString.add("R");
-//        actionString.add("R");
-//        robot.turn(RIGHT);
-//        robot.turn(RIGHT);
-//        if (!realRun)
-//            stepTaken();
-//
-//        while (!robot.isObstacleAhead()){
-//            System.out.println("Break");
-//            // MOVE FORWARD
-//            if (realRun)
-//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
-//            robot.move();
-//            if (!realRun)
-//                stepTaken();
-//            actionString.add("M");
-//        }
-//        if (!robot.isObstacleRight()){
-//            if (realRun)
-//                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
-//            robot.turn(RIGHT);
-//            if (!realRun)
-//                stepTaken();
-//            actionString.add("R");
-//        }
     }
 
     private boolean findPathAndMove(GridMap grid, Robot robot, int x, int y, boolean realRun) {
@@ -383,6 +384,8 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             }
         }
 
+        // Aditional Checks for loops
+        breakIslandLoop(robot, realRun, grid);
         if (actionString.size()>8)
             breakLoop(robot, realRun, grid);
     }
