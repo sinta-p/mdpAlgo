@@ -356,7 +356,7 @@ public interface AlgorithmRunner {
                 counter ++;
             }
             // check calibration
-            if (counter >= 3) {
+            if (counter >= 6) {
                 if (fakeRobot.canCalibrateFront() && fakeRobot.canCalibrateLeft()) {
                     actionWithCalibration.add("A");
                     counter = 0;

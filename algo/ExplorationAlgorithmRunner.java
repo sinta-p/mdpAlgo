@@ -97,6 +97,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         // MAIN LOOP (LEFT-WALL-FOLLOWER)
         while (!endZoneFlag || !startZoneFlag) {
             moveAndSense(grid, robot, realRun);
+            takePhoto(robot,grid,realRun);
             System.out.println(calibrationCounter+" "+endZoneFlag+ " "+startZoneFlag+ " "+robot.getPosX()+","+robot.getPosY());
             if (GridMap.isInEndZone(robot.getPosX(), robot.getPosY())) {
                 endZoneFlag = true;
@@ -476,6 +477,38 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             SocketMgr.getInstance().sendMessage(TARGET_ANDROID,
                     CommMgr.generateMapDescriptorMsg(grid.generateDescriptorPartOne(),grid.generateDescriptorPartTwo(),
                             robot.getCenterPosX(), robot.getCenterPosY(), robot.getOrientation()));
+        }
+    }
+
+    private void takePhoto(Robot robot, GridMap grid, boolean realRun) {
+
+        if (robot.canTakePhotoLeft()){
+            int x_obs = -1;
+            int y_obs = -1;
+            System.out.println("Taking photo for left obstacle.");
+            if (realRun) {
+                if(robot.getOrientation()== NORTH){
+                    x_obs =robot.getPosX()-1;
+                    y_obs = robot.getPosY()+1;
+                }
+                else if(robot.getOrientation()==EAST){
+                    x_obs =robot.getPosX()+1;
+                    y_obs = robot.getPosY()-1;
+                }
+                else if(robot.getOrientation()==SOUTH){
+                    x_obs =robot.getPosX()+3;
+                    y_obs = robot.getPosY()+1;
+                }
+                else if(robot.getOrientation()==WEST){
+                    x_obs =robot.getPosX()+1;
+                    y_obs = robot.getPosY()+3;
+                }
+                String obs = x_obs + "," + y_obs;
+                SocketMgr.getInstance().sendMessage(TARGET_RPI, obs); //get x and y
+            }
+            else{
+                stepTaken();
+            }
         }
     }
 }
