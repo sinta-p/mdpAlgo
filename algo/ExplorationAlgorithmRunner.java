@@ -47,10 +47,10 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         // CALIBRATION AFTER EXPLORATION
         calibrateAndTurn(robot, grid, realRun);
 
-        // GENERATE MAP DESCRIPTOR, SEND TO ANDROID
-        String part1 = grid.generateDescriptorPartOne();
-        String part2 = grid.generateDescriptorPartTwo();
-        SocketMgr.getInstance().sendMessage(TARGET_ANDROID, CommMgr.generateFinalDescriptor(part1, part2));
+//        // GENERATE MAP DESCRIPTOR, SEND TO ANDROID
+//        String part1 = grid.generateDescriptorPartOne();
+//        String part2 = grid.generateDescriptorPartTwo();
+//        SocketMgr.getInstance().sendMessage(TARGET_ANDROID, CommMgr.generateFinalDescriptor(part1, part2));
     }
 
     private void islandTest(Robot robot) {
@@ -97,7 +97,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         // MAIN LOOP (LEFT-WALL-FOLLOWER)
         while (!endZoneFlag || !startZoneFlag) {
             moveAndSense(grid, robot, realRun);
-            takePhoto(robot,grid,realRun);
+            //takePhoto(robot,grid,realRun);
             System.out.println(calibrationCounter+" "+endZoneFlag+ " "+startZoneFlag+ " "+robot.getPosX()+","+robot.getPosY());
             if (GridMap.isInEndZone(robot.getPosX(), robot.getPosY())) {
                 endZoneFlag = true;
