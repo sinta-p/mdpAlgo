@@ -97,7 +97,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         // MAIN LOOP (LEFT-WALL-FOLLOWER)
         while (!endZoneFlag || !startZoneFlag) {
             moveAndSense(grid, robot, realRun);
-            //takePhoto(robot,grid,realRun);
+            takePhoto(robot,grid,realRun);
             System.out.println(calibrationCounter+" "+endZoneFlag+ " "+startZoneFlag+ " "+robot.getPosX()+","+robot.getPosY());
             if (GridMap.isInEndZone(robot.getPosX(), robot.getPosY())) {
                 endZoneFlag = true;
@@ -263,6 +263,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         boolean turned = leftWallFollower(robot, grid, realRun);
 
         if (turned) {
+            takePhoto(robot,grid,realRun);
             senseAndUpdateAndroid(robot, grid, realRun);
         }
 
