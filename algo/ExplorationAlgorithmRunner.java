@@ -110,6 +110,15 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             if(grid.checkExploredPercentage() == 100 && !startZoneFlag){
                 findPathAndMove(grid, robot, START_X, START_Y, realRun);
 
+                // ADD FINAL MOVE
+                if (realRun)
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+                robot.move();
+                senseAndUpdateAndroid(robot, grid, realRun);
+                if (!realRun)
+                    stepTaken();
+                actionString.add("M");
+
                 if (endZoneFlag && GridMap.isInStartZone(robot.getPosX() + 2, robot.getPosY())) {
                     startZoneFlag = true;
                 }
@@ -134,19 +143,17 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             System.out.println("NOT FULLY EXPLORED, DOING A 2ND RUN!");
 
             for (int y = MAP_ROWS - 1; y >= 0; y--) {
-                for (int x = 0; x <= MAP_COLS - 1; x++) {
+                for (int x = MAP_COLS - 1; x >= 0; x--) {
                     // CHECK FOR UNEXPLORED CELLS && CHECK IF NEIGHBOURS ARE REACHABLE OR NOT
                     if (!grid.getIsExplored(x, y) && (findPathAndMove(grid, robot,x+1 , y, realRun)
                             ||findPathAndMove(grid, robot,x-1 , y, realRun)
                             ||findPathAndMove(grid, robot,x , y+1, realRun)
                             ||findPathAndMove(grid, robot,x , y-1, realRun))) {
-                        moveAndSense(grid, robot, realRun);
-                    }
-                    while (exploreChecker.getIsExplored(robot.getPosX(), robot.getPosY()) != grid.getIsExplored(robot.getPosX(), robot.getPosY())){
-                        moveAndSense(grid, robot, realRun);
-                    }
-                    if (grid.checkExploredPercentage() == 100) { // IF FULLEST EXPLORED, EXIT AND GO TO START
-                        break;
+                        moveFor2ndExp(exploreChecker, grid, robot, realRun);
+
+                        if (grid.checkExploredPercentage() == 100) { // IF FULLEST EXPLORED, EXIT AND GO TO START
+                            break;
+                        }
                     }
                 }
             }
@@ -156,6 +163,14 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         */
         if(!GridMap.isInStartZone(robot.getPosX()+2, robot.getPosY()+2)){
             findPathAndMove(grid, robot, START_X, START_Y, realRun);
+            // ADD FINAL MOVE
+            if (realRun)
+                SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+            robot.move();
+            senseAndUpdateAndroid(robot, grid, realRun);
+            if (!realRun)
+                stepTaken();
+            actionString.add("M");
         }
         System.out.println("EXPLORATION COMPLETED!");
         System.out.println("PERCENTAGE OF AREA EXPLORED: " + grid.checkExploredPercentage() + "%!");
@@ -220,6 +235,13 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         List<String> returnPath = AlgorithmRunner.runAstar(robot.getPosX(), robot.getPosY(), x, y, grid, fakeRobot);
 
         if (returnPath != null) {
+            //Remove last move
+            if (returnPath.get(returnPath.size()-1).equals("M")){
+                returnPath.remove(returnPath.size()-1);
+            } else {
+                returnPath.remove(returnPath.size()-2);
+            }
+
             System.out.println("A* Algorithm finished, executing actions");
             System.out.println(returnPath.toString());
             if (realRun) {
@@ -383,6 +405,257 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
 
                 // SENSE BEFORE CALIBRATION
                 senseAndUpdateAndroid(robot, grid, realRun);
+            }
+        }
+
+        // Aditional Checks for loops
+        breakIslandLoop(robot, realRun, grid);
+        if (actionString.size()>8)
+            breakLoop(robot, realRun, grid);
+    }
+
+    private void moveFor2ndExp(GridMap exploreChecker,GridMap grid, Robot robot, boolean realRun) {
+        // Make last move and sense
+        if (realRun)
+            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+        robot.move();
+        senseAndUpdateAndroid(robot, grid, realRun);
+        if (!realRun)
+            stepTaken();
+        actionString.add("M");
+        calibrationCounter++;
+
+        int x;
+        int y;
+        while (true){
+            int found = 0;
+            x = robot.getPosX();
+            y = robot.getPosY();
+            for (int i = 0; i<3;i++){
+                if (robot.getOrientation()==NORTH){
+                    if (exploreChecker.getIsExplored(x+i,y-1) != grid.getIsExplored(x+i,y-1)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y-2) != grid.getIsExplored(x+i,y-2)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x-1,y+i) != grid.getIsExplored(x-1,y+i)){
+                        found = 2;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x-2,y+i) != grid.getIsExplored(x-2,y+i)){
+                        found = 2;
+                        break;
+                    }
+                } else if (robot.getOrientation()==SOUTH){
+                    if (exploreChecker.getIsExplored(x+i,y+3) != grid.getIsExplored(x+i,y+3)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y+4) != grid.getIsExplored(x+i,y+4)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+3,y+i) != grid.getIsExplored(x+3,y+i)){
+                        found = 2;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+4,y+i) != grid.getIsExplored(x+4,y+i)){
+                        found = 2;
+                        break;
+                    }
+                } else if (robot.getOrientation()==EAST){
+                    if (exploreChecker.getIsExplored(x+3,y+i) != grid.getIsExplored(x+3,y+i)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+4,y+i) != grid.getIsExplored(x+4,y+i)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y-1) != grid.getIsExplored(x+i,y-1)){
+                        found = 2;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y-2) != grid.getIsExplored(x+i,y-2)){
+                        found = 2;
+                        break;
+                    }
+                } else if (robot.getOrientation()==WEST){
+                    if (exploreChecker.getIsExplored(x-1,y+i) != grid.getIsExplored(x-1,y+i)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x-2,y+i) != grid.getIsExplored(x-2,y+i)){
+                        found = 1;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y+3) != grid.getIsExplored(x+i,y+3)){
+                        found = 2;
+                        break;
+                    } else if (exploreChecker.getIsExplored(x+i,y+4) != grid.getIsExplored(x+i,y+4)){
+                        found = 2;
+                        break;
+                    }
+                }
+            }
+
+
+            if (found == 0 ) {
+                for (int i = 0; i<3;i++) {
+                    if (robot.getOrientation() == WEST) {
+                        if (!grid.getIsExplored(x + i, y - 1)) {
+                            found = 3;
+                            break;
+                        } else if (!grid.getIsExplored(x + i, y - 2)) {
+                            found = 3;
+                            break;
+                        }
+                    } else if (robot.getOrientation() == EAST) {
+                        if (!grid.getIsExplored(x + i, y + 3)) {
+                            found = 3;
+                            break;
+                        } else if (!grid.getIsExplored(x + i, y + 4)) {
+                            found = 3;
+                            break;
+                        }
+                    } else if (robot.getOrientation() == NORTH) {
+                        if (!grid.getIsExplored(x + 3, y + i)) {
+                            found = 3;
+                            break;
+                        } else if (!grid.getIsExplored(x + 4, y + i)) {
+                            found = 3;
+                            break;
+                        }
+                    } else if (robot.getOrientation() == SOUTH) {
+                        if (!grid.getIsExplored(x - 1, y + i)) {
+                            found = 3;
+                            break;
+                        } else if (!grid.getIsExplored(x - 2, y + i)) {
+                            found = 3;
+                            break;
+                        }
+                    }
+                }
+                if (found == 3) {
+                    if (realRun)
+                        SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "R");
+                    robot.turn(RIGHT);
+                    senseAndUpdateAndroid(robot, grid, realRun);
+                    if (!realRun)
+                        stepTaken();
+                    actionString.add("R");
+                }
+            } else if (found == 2 && !robot.isObstacleLeft()){
+                if (realRun)
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "L");
+                robot.turn(LEFT);
+                senseAndUpdateAndroid(robot, grid, realRun);
+                if (!realRun)
+                    stepTaken();
+                actionString.add("L");
+            }
+
+            // Update reference map
+            for (int m = x-2; m < x+5; m++) {
+                for (int n = y-2; n < y+5; n++) {
+                    exploreChecker.setExplored(m, n, grid.getIsExplored(m, n));
+                    exploreChecker.setIsObstacle(m, n, grid.getIsObstacle(m, n));
+                }
+            }
+
+            if (found == 0 && robot.isObstacleAhead()){
+                break;
+            }
+            else if (!robot.isObstacleAhead()){
+                // MOVE FORWARD
+                if (realRun)
+                    SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "M");
+                robot.move();
+                senseAndUpdateAndroid(robot, grid, realRun);
+                if (!realRun)
+                    stepTaken();
+                actionString.add("M");
+
+                calibrationCounter++;
+                // CALIBRATION
+                if (calibrationCounter >= CALIBRATION_LIMIT) {
+                    // OTHERWISE CALIBRATE LEFT
+                    if (realRun){
+                        // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
+                        if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
+                            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "A");
+                            calibrationCounter = 0;
+
+                            // SENSE FOR RIGHT SIDE
+                            robot.turn(RIGHT);
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                            robot.turn(LEFT);
+                        }
+                        else if (robot.canCalibrateFront() && robot.canCalibrateRight()) {
+                            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "G");
+                            calibrationCounter = 0;
+
+                            // SENSE FOR RIGHT SIDE
+                            robot.turn(RIGHT);
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                            robot.turn(LEFT);
+                        }
+                        else if (robot.canCalibrateLeft()) {
+                            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "B");
+                            calibrationCounter = 0;
+
+                            // SENSE FOR RIGHT SIDE
+                            robot.turn(RIGHT);
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                            robot.turn(LEFT);
+                        } else if(robot.canCalibrateFront()) {
+                            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "C");
+                            calibrationCounter = 0;
+
+                            // SENSE FOR RIGHT SIDE
+                            robot.turn(RIGHT);
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                            robot.turn(LEFT);
+                        } else if(robot.canCalibrateRight()) {
+                            SocketMgr.getInstance().sendMessage(TARGET_ARDUINO, "E");
+                            calibrationCounter = 0;
+                            // SENSE FOR RIGHT SIDE
+                            robot.turn(RIGHT);
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                            robot.turn(LEFT);
+                        }
+                    }
+                    else {
+                        //SHOW CALIBRATION PROCESS ON SIMULATOR
+                        // IF CAN CALIBRATE FRONT, TAKE THE OPPORTUNITY
+                        if (robot.canCalibrateFront() && robot.canCalibrateLeft()) {
+                            System.out.println("CALIBRATION FRONT LEFT");
+                            robot.turn(LEFT);
+                            stepTaken();
+                            robot.turn(RIGHT);
+                            calibrationCounter = 0;
+                        }
+                        else if (robot.canCalibrateFront() && robot.canCalibrateRight()) {
+                            System.out.println("CALIBRATION FRONT Right");
+                            robot.turn(RIGHT);
+                            stepTaken();
+                            robot.turn(LEFT);
+                            calibrationCounter = 0;
+                        }
+                        // OTHERWISE CALIBRATE LEFT
+                        else if (robot.canCalibrateLeft()) {
+                            System.out.println("CALIBRATION LEFT");
+                            robot.turn(LEFT);
+                            stepTaken();
+                            robot.turn(RIGHT);
+                            calibrationCounter = 0;
+                        }else if(robot.canCalibrateFront()) {
+                            System.out.println("CALIBRATION FRONT");
+                            calibrationCounter = 0;
+
+                            // SENSE BEFORE CALIBRATION
+                            senseAndUpdateAndroid(robot, grid, realRun);
+                        } else if (robot.canCalibrateFront() && robot.canCalibrateRight()) {
+                            System.out.println("CALIBRATION Right");
+                            robot.turn(RIGHT);
+                            stepTaken();
+                            robot.turn(LEFT);
+                            calibrationCounter = 0;
+                        }
+                    }
+                }
             }
         }
 
