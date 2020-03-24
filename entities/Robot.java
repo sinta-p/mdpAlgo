@@ -373,7 +373,7 @@ public class Robot {
             }
             map.setExplored(xToUpdate, yToUpdate, true);
             // if this cell is an obstacle
-            if (i == distance && obstacleAhead) {
+            if (i == distance && obstacleAhead && !(xToUpdate < 3 && yToUpdate >16) && !(xToUpdate > 11 && yToUpdate <3 )) {
                 map.setObstacleProbability(xToUpdate, yToUpdate, reliability); // increment by reliability
             } else { // if this cell is not an obstacle
                 map.setObstacleProbability(xToUpdate, yToUpdate, -reliability); // decrement by reliability
