@@ -128,6 +128,8 @@ public class FastestPathAlgorithmRunner implements AlgorithmRunner {
                     }
                     takeStep();
                 }
+                CommMgr.generateMapDescriptorMsg(grid.generateDescriptorPartOne(),grid.generateDescriptorPartTwo(),
+                        robot.getCenterPosX(), robot.getCenterPosY(), robot.getOrientation());
             }
         } else {
             System.out.println("Fastest path not found!");
