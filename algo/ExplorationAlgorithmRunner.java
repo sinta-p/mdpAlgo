@@ -723,7 +723,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
             int x_obs = -1;
             int y_obs = -1;
             System.out.println("Taking photo for left obstacle.");
-            if (realRun) {
+
                 if(robot.getOrientation()== NORTH){
                     x_obs =robot.getPosX()-1;
                     y_obs = MAP_ROWS-1 - (robot.getPosY()+1);
@@ -757,6 +757,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     }
                 }
                 String obs = x_obs + "," + y_obs;
+            if (realRun) {
                 SocketMgr.getInstance().sendMessage(TARGET_RPI, obs); //get x and y
             }
             else{
