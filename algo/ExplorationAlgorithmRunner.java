@@ -722,41 +722,51 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
         if (robot.canTakePhotoLeft()){
             int x_obs = -1;
             int y_obs = -1;
+            int y_algo = -1;
             System.out.println("Taking photo for left obstacle.");
-            if (realRun) {
+
                 if(robot.getOrientation()== NORTH){
                     x_obs =robot.getPosX()-1;
-                    y_obs = MAP_ROWS-1 - (robot.getPosY()+1);
-                    if (!grid.getIsOnlyObstacle(x_obs,y_obs)){
-                        if (!grid.getIsOnlyObstacle(x_obs,--y_obs))
-                            y_obs +=2;
+                    y_algo  = robot.getPosY()+1;
+                    y_obs = MAP_ROWS-1 - y_algo;
+                    if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
+                        if (grid.getIsOnlyObstacle(x_obs,--y_algo))
+                            y_obs --;
+                        else
+                            y_obs ++;
                     }
                 }
                 else if(robot.getOrientation()==EAST){
                     x_obs =robot.getPosX()+1;
-                    y_obs = MAP_ROWS-1 - (robot.getPosY()-1);
-                    if (!grid.getIsOnlyObstacle(x_obs,y_obs)){
-                        if (!grid.getIsOnlyObstacle(--x_obs,y_obs))
+                    y_algo  = robot.getPosY()-1;
+                    y_obs = MAP_ROWS-1 - y_algo;
+                    if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
+                        if (!grid.getIsOnlyObstacle(--x_obs,y_algo))
                             x_obs +=2;
                     }
                 }
                 else if(robot.getOrientation()==SOUTH){
                     x_obs =robot.getPosX()+3;
-                    y_obs = MAP_ROWS-1 -(robot.getPosY()+1);
-                    if (!grid.getIsOnlyObstacle(x_obs,y_obs)){
-                        if (!grid.getIsOnlyObstacle(x_obs,--y_obs))
-                            y_obs +=2;
+                    y_algo =robot.getPosY()+1;
+                    y_obs = MAP_ROWS-1 - y_algo;
+                    if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
+                        if (grid.getIsOnlyObstacle(x_obs,--y_algo))
+                            y_obs --;
+                        else
+                            y_obs ++;
                     }
                 }
                 else if(robot.getOrientation()==WEST){
                     x_obs =robot.getPosX()+1;
-                    y_obs = MAP_ROWS-1 -(robot.getPosY()+3);
-                    if (!grid.getIsOnlyObstacle(x_obs,y_obs)){
-                        if (!grid.getIsOnlyObstacle(--x_obs,y_obs))
+                    y_algo =robot.getPosY()+3;
+                    y_obs = MAP_ROWS-1 - y_algo;
+                    if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
+                        if (!grid.getIsOnlyObstacle(--x_obs,y_algo))
                             x_obs +=2;
                     }
                 }
                 String obs = x_obs + "," + y_obs;
+            if (realRun) {
                 SocketMgr.getInstance().sendMessage(TARGET_RPI, obs); //get x and y
             }
             else{
