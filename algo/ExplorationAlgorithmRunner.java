@@ -731,9 +731,9 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     y_obs = MAP_ROWS-1 - y_algo;
                     if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
                         if (grid.getIsOnlyObstacle(x_obs,--y_algo))
-                            y_obs --;
-                        else
                             y_obs ++;
+                        else
+                            y_obs --;
                     }
                 }
                 else if(robot.getOrientation()==EAST){
@@ -751,9 +751,9 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                     y_obs = MAP_ROWS-1 - y_algo;
                     if (!grid.getIsOnlyObstacle(x_obs,y_algo)){
                         if (grid.getIsOnlyObstacle(x_obs,--y_algo))
-                            y_obs --;
-                        else
                             y_obs ++;
+                        else
+                            y_obs --;
                     }
                 }
                 else if(robot.getOrientation()==WEST){
@@ -770,6 +770,7 @@ public class ExplorationAlgorithmRunner implements AlgorithmRunner {
                 SocketMgr.getInstance().sendMessage(TARGET_RPI, obs); //get x and y
             }
             else{
+                System.out.println("Obstable coordinates: " + obs);
                 stepTaken();
             }
         }
