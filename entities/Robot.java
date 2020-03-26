@@ -259,22 +259,22 @@ public class Robot {
     public boolean canTakePhotoLeft() {
         if (orientation == NORTH) {
             // DIRECTLY BESIDE OF ROBOT
-            if (map.getIsOnlyObstacle(posX - 1, posY + 1)) {
+            if (map.getIsOnlyObstacle(posX - 1, posY + 1) ||map.getIsOnlyObstacle(posX - 1, posY ) ||map.getIsOnlyObstacle(posX - 1, posY + 2)) {
                 return true;
             }
         } else if (orientation == SOUTH) {
             // DIRECTisObstacleLeftLY BESIDE OF ROBOT
-            if (map.getIsOnlyObstacle(posX + 3, posY + 1)) {
+            if (map.getIsOnlyObstacle(posX + 3, posY + 1)||map.getIsOnlyObstacle(posX + 3, posY )||map.getIsOnlyObstacle(posX + 3, posY + 2)) {
                 return true;
             }
         } else if (orientation == EAST) {
             // DIRECTLY BESIDE OF ROBOT
-            if (map.getIsOnlyObstacle(posX + 1, posY - 1)) {
+            if (map.getIsOnlyObstacle(posX + 1, posY - 1)|| map.getIsOnlyObstacle(posX , posY - 1)|| map.getIsOnlyObstacle(posX + 2, posY - 1)) {
                 return true;
             }
         } else if (orientation == WEST) {
             // DIRECTLY BESIDE OF ROBOT
-            if (map.getIsOnlyObstacle(posX + 1, posY + 3)) {
+            if (map.getIsOnlyObstacle(posX + 1, posY + 3)||map.getIsOnlyObstacle(posX , posY + 3)||map.getIsOnlyObstacle(posX + 2, posY + 3)) {
                 return true;
             }
         }
